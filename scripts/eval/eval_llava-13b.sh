@@ -28,12 +28,11 @@ ARGS=(
 
   ### paths ###
   data.train_files="$(prefix 'data/grefcoco/grefcoco_testA')"
-  data.sam_embed_dir="$(prefix 'data/refcoco_series_sam_embed')"
+  data.video_embed_dir="$(prefix 'data/refcoco_series_video_embed')"
   worker.actor.model.model_path="$(prefix 'pretrained_models/SegCompass-llava-13b-init')"
   worker.actor.model.init_sae_ckpt="$(prefix 'sae_checkpoints/sae_llava-13b_L16/default/ep_4.pt')"
 
   trainer.save_checkpoint_path="$(prefix "checkpoints/${RUN_NAME}/${RUN_FLAG}")"
-  worker.actor.model.init_sam_ckpt="$(prefix 'pretrained_models/sam_vit_h_4b8939.pth')"
   trainer.load_checkpoint_path=null
   config="scripts/initial.yaml"
 

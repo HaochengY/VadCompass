@@ -35,7 +35,7 @@ def recursive_post_init(dataclass_obj):
 class DataConfig:
     train_files: Optional[str] = None  # split with |
     val_files: str = ""
-    sam_embed_dir: str = ""
+    video_embed_dir: Optional[str] = ""
     prompt_key: str = "prompt"
     max_prompt_length: int = 512
     max_response_length: int = 512

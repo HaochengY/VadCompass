@@ -189,10 +189,8 @@ rich==14.0.0
 rich-toolkit==0.14.7
 rpds-py==0.25.1
 safetensors==0.5.3
-sam2==1.1.0
 scikit-image==0.25.2
 scipy==1.15.3
-segment_anything @ file:///userhome/projects/segment-anything
 sentencepiece==0.2.0
 sentry-sdk==2.29.1
 setproctitle==1.3.6

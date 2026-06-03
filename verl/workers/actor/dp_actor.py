@@ -76,7 +76,7 @@ class DataParallelPPOActor(BasePPOActor):
         attention_mask = micro_batch["attention_mask"]
         position_ids = micro_batch["position_ids"]
         responses = micro_batch["responses"]
-        image_embed = micro_batch["sam_embed"] if forward_seg else None
+        image_embed = micro_batch.get("video_embed") if forward_seg else None
         unpadded_hw = micro_batch["unpadded_hw"] if forward_seg else None
         response_length = responses.size(-1)
         if position_ids.dim() == 3:  # qwen2vl mrope
@@ -160,7 +160,7 @@ class DataParallelPPOActor(BasePPOActor):
                 ``attention_mask``: tensor of shape [batch_size, sequence_length]. torch.int64.
                 ``position_ids``: tensor of shape [batch_size, sequence_length]. torch.int64.
                 ``responses``:  tensor of shape [batch_size, response_length]. torch.int64.
-                ``sam_embed``: optional, if gen_mask = True, required.
+                ``video_embed``: optional precomputed visual features. If absent, Qwen vision inputs are used.
 
             forward_seg: whether to generate segmentation mask for computing reward function
 
@@ -178,7 +178,9 @@ class DataParallelPPOActor(BasePPOActor):
 
         select_keys = ["responses", "input_ids", "attention_mask", "position_ids", ]
         if forward_seg:
-            select_keys += ["sam_embed", "unpadded_hw", "sae_input_ids", "sae_attention_mask", "sae_position_ids"]
+            select_keys += ["unpadded_hw", "sae_input_ids", "sae_attention_mask", "sae_position_ids"]
+            if "video_embed" in data.batch.keys():
+                select_keys.append("video_embed")
 
         if "pixel_values" in data.non_tensor_batch.keys() or "pixel_values_videos" in data.non_tensor_batch.keys():
             non_tensor_select_keys = [
@@ -204,7 +206,17 @@ class DataParallelPPOActor(BasePPOActor):
             if forward_seg:
                 seg_outputs = forward_outputs["seg_outputs"]
                 frame_logits_lst.append(seg_outputs["token_pooled_logits"])
-                mask_sigmoid_lst.append(seg_outputs["mask_sigmoid"])
+                mask_sigmoid_lst.append(seg_outputs.get(
+                    "mask_sigmoid",
+                    torch.zeros(
+                        seg_outputs["token_pooled_logits"].size(0),
+                        seg_outputs["token_pooled_logits"].size(1),
+                        1,
+                        1,
+                        device=seg_outputs["token_pooled_logits"].device,
+                        dtype=seg_outputs["token_pooled_logits"].dtype,
+                    ),
+                ))
                 conf_logits_lst.append(seg_outputs["conf_logits"])
 
         log_probs = torch.concat(log_probs_lst, dim=0)
@@ -223,8 +235,10 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_module.train()
 
         select_keys = ["responses", "input_ids", "attention_mask", "position_ids", "old_log_probs", "advantages",
-                       "sam_embed", "n_multi_objects", "mask_float_256", "unpadded_hw",
+                       "n_multi_objects", "mask_float_256", "unpadded_hw",
                        "sae_input_ids", "sae_attention_mask", "sae_position_ids", ]
+        if "video_embed" in data.batch.keys():
+            select_keys.append("video_embed")
         select_keys += [
             key for key in ("frame_labels", "frame_label", "frame_targets", "labels", "label")
             if key in data.batch.keys()
@@ -406,7 +420,11 @@ class DataParallelPPOActor(BasePPOActor):
         target = torch.as_tensor(target, device=logits.device, dtype=logits.dtype)
         B, K, N = logits.shape
         if target.dim() == 1:
-            if target.numel() == B:
+            if target.numel() == N and B == 1:
+                target = target.view(1, 1, N).expand(B, K, N)
+            elif target.numel() != B:
+                target = F.interpolate(target.view(1, 1, -1), size=N, mode="nearest").view(1, 1, N).expand(B, K, N)
+            elif target.numel() == B:
                 target = target.view(B, 1, 1).expand(B, K, N)
             elif target.numel() == N and B == 1:
                 target = target.view(1, 1, N).expand(B, K, N)
@@ -415,6 +433,8 @@ class DataParallelPPOActor(BasePPOActor):
         elif target.dim() == 2:
             if target.shape == (B, N):
                 target = target.unsqueeze(1).expand(B, K, N)
+            elif target.size(0) == B:
+                target = F.interpolate(target.unsqueeze(1), size=N, mode="nearest").expand(B, K, N)
             elif target.shape == (B, K) and N == 1:
                 target = target.unsqueeze(-1)
             else:
@@ -520,8 +540,10 @@ class DataParallelPPOActor(BasePPOActor):
         save_metric_path = os.path.join(data.meta_info["write_eval_dir"], "rank_"+str(self.rank)+".txt")
 
         select_keys = ["responses", "input_ids", "attention_mask", "position_ids", "mask_bool_gt_padded",
-                       "image_id", "sam_embed", "n_multi_objects", "unpadded_hw", "original_hw",
+                       "image_id", "n_multi_objects", "unpadded_hw", "original_hw",
                        "sae_input_ids", "sae_attention_mask", "sae_position_ids", ]
+        if "video_embed" in data.batch.keys():
+            select_keys.append("video_embed")
 
         non_tensor_select_keys = [
             key for key in ["pixel_values", "image_grid_thw", "pixel_values_videos", "video_grid_thw"]

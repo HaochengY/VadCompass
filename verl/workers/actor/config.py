@@ -26,8 +26,7 @@ class ModelConfig:
     override_config: Dict[str, Any] = field(default_factory=dict)
     enable_gradient_checkpointing: bool = True
     trust_remote_code: bool = True
-    init_sam_ckpt: str = "pretrained_models/sam_vit_h_4b8939.pth"
-    init_sae_ckpt: str = "pretrained_models/sae"
+    init_sae_ckpt: Optional[str] = "pretrained_models/sae"
     k_slots: Optional[int] = None
 
     def post_init(self):
@@ -40,8 +39,6 @@ class OptimConfig:
     base_lr: float = 1e-6
     lr_qb_rate: int = 150
     lr_head_rate: int = 80
-    lr_pe_rate: int = 10
-    lr_decoder_rate: int = 25
     betas: Tuple[float, float] = (0.9, 0.999)
     weight_decay: float = 1e-2
     lr_warmup_steps_ratio: float = 0.0

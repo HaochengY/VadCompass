@@ -2,10 +2,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import math
+import os
 
 from dataclasses import dataclass
 from typing import Optional, Dict
-from segment_anything import sam_model_registry
 from transformers.utils import ModelOutput
 from transformers.models.qwen2_5_vl.modeling_qwen2_5_vl import (
     Qwen2_5_VLCausalLMOutputWithPast,
@@ -44,8 +44,6 @@ class VLRefSegCore(nn.Module):
         sae: SAE,
         query_book: nn.Module,
         heatmap_head: nn.Module,
-        prompt_encoder: nn.Module,
-        mask_decoder: nn.Module,
         sae_hooked_layer: int,
         special_token_id: int = None,
     ):
@@ -54,15 +52,23 @@ class VLRefSegCore(nn.Module):
         self.sae = sae
         self.query_book = query_book
         self.heatmap_head = heatmap_head
-        self.prompt_encoder = prompt_encoder
-        self.mask_decoder = mask_decoder
         self.sae_hooked_layer = sae_hooked_layer
+        self._last_vision_features = None
+        self._vision_hook_handle = None
 
         # SAFETY: special_token_id must be provided
         if special_token_id is None:
             raise ValueError("special_token_id must not be None. Pass tokenizer.convert_tokens_to_ids('<REF_POS>')")
         # Keep on-module device; not saved in checkpoint (persistent=False).
         self.register_buffer("ref_pos_id", torch.tensor(special_token_id, dtype=torch.long), persistent=False)
+
+        visual = getattr(self._base_llm(), "model", self._base_llm())
+        visual = getattr(visual, "visual", None)
+        if visual is not None:
+            self._vision_hook_handle = visual.register_forward_hook(self._capture_vision_features)
+
+    def _capture_vision_features(self, _module, _inputs, output):
+        self._last_vision_features = output
 
     def get_ref_vec(self, llm_input_ids, last_hidden_state):
         # last K <REF_POS> per sample, pad zeros if fewer than K
@@ -103,6 +109,8 @@ class VLRefSegCore(nn.Module):
 
         if video_embed is None:
             video_embed = image_embed
+        if video_embed is None and forward_seg:
+            video_embed = self.extract_vision_embed(**llm_inputs)
 
         # ======== Forward Segmentation Relative Modules ========
         ref_vec = self.get_ref_vec(
@@ -126,6 +134,63 @@ class VLRefSegCore(nn.Module):
         llm_output_dict = dict(llm_outputs)
 
         return Qwen2_5_VLWithSegOutput(**llm_output_dict, seg_outputs=seg_outputs)
+
+    def _base_llm(self):
+        model = self.llm
+        while hasattr(model, "module"):
+            model = model.module
+        return model
+
+    def _pack_visual_features(self, features, grid_thw, merge_size=1):
+        if hasattr(features, "pooler_output"):
+            features = features.pooler_output
+        if torch.is_tensor(features):
+            split_sizes = (grid_thw.prod(-1) // (int(merge_size) ** 2)).tolist()
+            features = torch.split(features, split_sizes)
+
+        packed = []
+        max_t, max_l = 0, 0
+        for feat, grid in zip(features, grid_thw):
+            t = int(grid[0].item())
+            l = int(feat.size(0) // max(t, 1))
+            feat = feat.reshape(t, l, feat.size(-1))
+            packed.append(feat)
+            max_t = max(max_t, t)
+            max_l = max(max_l, l)
+
+        if not packed:
+            return None
+
+        out = packed[0].new_zeros(len(packed), max_t, max_l, packed[0].size(-1))
+        for i, feat in enumerate(packed):
+            out[i, :feat.size(0), :feat.size(1)] = feat
+        return out
+
+    def extract_vision_embed(
+            self,
+            pixel_values: torch.Tensor = None,
+            image_grid_thw: torch.Tensor = None,
+            pixel_values_videos: torch.Tensor = None,
+            video_grid_thw: torch.Tensor = None,
+            **_,
+    ):
+        base_llm = self._base_llm()
+        vision_model = getattr(base_llm, "model", base_llm)
+        visual = getattr(vision_model, "visual", None)
+        merge_size = getattr(visual, "spatial_merge_size", 1)
+
+        with torch.no_grad():
+            if self._last_vision_features is not None and pixel_values_videos is not None and video_grid_thw is not None:
+                features = self._last_vision_features
+                self._last_vision_features = None
+                return self._pack_visual_features(features, video_grid_thw, merge_size).detach()
+
+            if self._last_vision_features is not None and pixel_values is not None and image_grid_thw is not None:
+                features = self._last_vision_features
+                self._last_vision_features = None
+                return self._pack_visual_features(features, image_grid_thw, merge_size).detach()
+
+        raise ValueError("video_embed is missing and no Qwen vision inputs are available for on-the-fly extraction")
 
     def _forward_seg(self, video_embed, ref_vec, sae_embeds, sae_attention_mask, unpadded_hw):
         # ======== forward by QueryBookHead =========
@@ -349,10 +414,9 @@ def build_VLRefSegCore(
         k_slots: int,
         sae_cfg: SAEConfig,
         init_sae_ckpt: str,
-        init_sam_ckpt: str,
         tokenizer,
         token_embed_dim=None,
-        special_token: str = "<REF_POS>",
+        special_token: str = None,
         dtype=torch.bfloat16,
         is_trainable=True,
 ):
@@ -366,37 +430,23 @@ def build_VLRefSegCore(
         video_dim=token_embed_dim,
     )
 
-    _sam = sam_model_registry["vit_h"](checkpoint=None)
-    prompt_encoder = _sam.prompt_encoder
-    mask_decoder = _sam.mask_decoder
-    del _sam
-
     sae = SAE(cfg=sae_cfg)
     if init_sae_ckpt is not None:
         sae.load_state_dict(torch.load(init_sae_ckpt, map_location="cpu")["sae"], strict=True)
 
-    if init_sam_ckpt is not None:
-        sd = torch.load(init_sam_ckpt, map_location="cpu")
-        pe_sd = {k.split("prompt_encoder.", 1)[1]: v for k, v in sd.items() if k.startswith("prompt_encoder.")}
-        md_sd = {k.split("mask_decoder.", 1)[1]: v for k, v in sd.items() if k.startswith("mask_decoder.")}
-        prompt_encoder.load_state_dict(pe_sd, strict=False)
-        mask_decoder.load_state_dict(md_sd, strict=False)
-
+    if special_token is None:
+        special_token = os.environ.get("SEGCOMPASS_REF_POS_TOKEN", "<REF_POS>")
     ref_pos_id = int(tokenizer.convert_tokens_to_ids(special_token))
 
     sae = sae.to(dtype=dtype)
     query_book = query_book.to(dtype=dtype)
     heatmap_head = heatmap_head.to(dtype=dtype)
-    prompt_encoder = prompt_encoder.to(dtype=dtype)
-    mask_decoder = mask_decoder.to(dtype=dtype)
 
     core = VLRefSegCore(
         llm=llm,
         sae=sae,
         query_book=query_book,
         heatmap_head=heatmap_head,
-        prompt_encoder=prompt_encoder,
-        mask_decoder=mask_decoder,
         special_token_id=ref_pos_id,
         sae_hooked_layer=sae_cfg.hook_layer,
     )

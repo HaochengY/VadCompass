@@ -32,8 +32,6 @@ worker:
       weight_decay: 1.0e-2
       lr_qb_rate: 30
       lr_head_rate: 25
-      lr_pe_rate: 10
-      lr_decoder_rate: 5
       lr_final_div_factor: 6.7
     fsdp:
       param_offload: false

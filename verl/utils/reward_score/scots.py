@@ -7,8 +7,10 @@ from verl.utils.torch_functional import pairwise_soft_iou
 
 def scots_compute_score(
     tokens: str,
-    masks: torch.Tensor,
-    gt_masks: torch.Tensor,
+    masks: torch.Tensor = None,
+    gt_masks: torch.Tensor = None,
+    frame_logits: torch.Tensor = None,
+    frame_labels: torch.Tensor = None,
     n_multi_objects: torch.Tensor = None,
     conf_logits: torch.Tensor = None,
 ):
@@ -23,8 +25,40 @@ def scots_compute_score(
         conf_logits: kept for call-site compatibility; reward uses all K predicted slots.
     """
     format_score = format_reward(tokens)
-    mask_score = _slot_mean_iou(masks, gt_masks, n_multi_objects)
-    return 0.3 * float(format_score) + 0.7 * mask_score
+    if frame_logits is not None and frame_labels is not None:
+        score = _frame_mean_iou(frame_logits, frame_labels)
+    else:
+        score = _slot_mean_iou(masks, gt_masks, n_multi_objects)
+    return 0.3 * float(format_score) + 0.7 * score
+
+
+def _frame_mean_iou(frame_logits: torch.Tensor, frame_labels: torch.Tensor) -> float:
+    logits = torch.as_tensor(frame_logits, dtype=torch.float32)
+    if logits.dim() == 3 and logits.size(1) == 1:
+        logits = logits[:, 0, :]
+    elif logits.dim() == 1:
+        logits = logits.unsqueeze(0)
+    elif logits.dim() != 2:
+        raise ValueError(f"frame_logits must be [K,N] or [K,1,N], got {tuple(logits.shape)}")
+    pred = torch.sigmoid(logits)
+
+    labels = torch.as_tensor(frame_labels, device=pred.device, dtype=pred.dtype).clamp(0.0, 1.0)
+    K, N = pred.shape
+    if labels.dim() == 1:
+        if labels.numel() != N:
+            labels = torch.nn.functional.interpolate(
+                labels.view(1, 1, -1), size=N, mode="nearest"
+            ).view(N)
+        labels = labels.view(1, N).expand(K, N)
+    elif labels.dim() == 2 and labels.shape == (1, N):
+        labels = labels.expand(K, N)
+    elif labels.dim() != 2 or labels.shape != (K, N):
+        raise ValueError(f"cannot align frame_labels shape {tuple(labels.shape)} to pred {(K, N)}")
+
+    intersection = (pred * labels).sum(dim=-1)
+    union = pred.sum(dim=-1) + labels.sum(dim=-1) - intersection
+    iou = intersection / union.clamp_min(1e-6)
+    return float(iou.mean().item())
 
 
 def _slot_mean_iou(masks: torch.Tensor, gt_masks: torch.Tensor, n_multi_objects: torch.Tensor | None) -> float:

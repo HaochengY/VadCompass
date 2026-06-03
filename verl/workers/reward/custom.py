@@ -47,13 +47,22 @@ class CustomRewardManager:
             valid_response_ids = response_ids[:valid_response_length]
             response_str = self.tokenizer.decode(valid_response_ids, skip_special_tokens=False)
 
-            score = self.compute_score(
-                tokens=response_str,
-                masks=data_item.batch["mask_sigmoid_detach"],
-                gt_masks=data_item.batch["mask_float_256"],
-                n_multi_objects=data_item.batch["n_multi_objects"],
-                conf_logits=data_item.batch["conf_logits_detach"],
-            )
+            if "frame_labels" in data_item.batch:
+                score = self.compute_score(
+                    tokens=response_str,
+                    frame_logits=data_item.batch["token_pooled_logits_detach"],
+                    frame_labels=data_item.batch["frame_labels"],
+                    n_multi_objects=data_item.batch["n_multi_objects"],
+                    conf_logits=data_item.batch["conf_logits_detach"],
+                )
+            else:
+                score = self.compute_score(
+                    tokens=response_str,
+                    masks=data_item.batch["mask_sigmoid_detach"],
+                    gt_masks=data_item.batch["mask_float_256"],
+                    n_multi_objects=data_item.batch["n_multi_objects"],
+                    conf_logits=data_item.batch["conf_logits_detach"],
+                )
 
             reward_tensor[i, valid_response_length - 1] = score
 

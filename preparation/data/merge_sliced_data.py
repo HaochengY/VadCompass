@@ -7,12 +7,12 @@ from datasets import load_from_disk, concatenate_datasets, DatasetDict
 def merge_sliced_data(dataset_dir: str, out_dir: str, overwrite: bool = False) -> str:
     """
     Merge a directory composed of HF dataset slices,
-    where data is preprocessed, e.g. by offline generating sam information.
+    where data is preprocessed, e.g. by offline generating video feature information.
     """
     root = Path(dataset_dir)
 
     parts = [p for p in root.iterdir()
-             if p.is_dir() and p.name != "sam_embed"
+             if p.is_dir() and p.name != "video_embed"
              and (p / "dataset_info.json").exists()]
     if not parts:
         raise FileNotFoundError(f"No dataset slices found under {root}")

@@ -7,8 +7,13 @@ from pycocotools import mask as maskUtils
 from datasets import Dataset, Features, Value, Sequence, Array2D, Array3D, Image
 from pathlib import Path
 from PIL import Image as PILImage
-from segment_anything.utils.transforms import ResizeLongestSide
 from gen_sam_info import resize_pad_mask
+
+
+def get_preprocess_shape(oldh: int, oldw: int, long_side_length: int) -> Tuple[int, int]:
+    scale = long_side_length * 1.0 / max(oldh, oldw)
+    newh, neww = oldh * scale, oldw * scale
+    return int(newh + 0.5), int(neww + 0.5)
 
 
 def coco_anno_to_mask(raw_anno: Dict, orig_size: Union[Tuple, List]) -> np.ndarray:
@@ -107,9 +112,8 @@ def save_gref_hf(
         if not (orig_size[0] == image_np.shape[0] and orig_size[1] == image_np.shape[1]):
             print("Warning! original size not matched", flush=True)
 
-        resize = ResizeLongestSide(target_length=1024)
         orig_size = (image_np.shape[0], image_np.shape[1])
-        input_size = resize.get_preprocess_shape(orig_size[0], orig_size[1], resize.target_length)
+        input_size = get_preprocess_shape(orig_size[0], orig_size[1], 1024)
 
         embed_name = data_item["image_filename"].rsplit('.', 1)[0] + ".pt"
         embed_path = os.path.join("b" + str(data_item["image_id"])[-1], embed_name)

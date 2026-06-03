@@ -400,7 +400,7 @@ class RayPPOTrainer:
                     tokenizer=self.tokenizer,
                     processor=self.processor,
                     llm_version=self.config.worker.llm_version,
-                    sam_embed_dir=self.config.data.sam_embed_dir,
+                    video_embed_dir=self.config.data.video_embed_dir,
                     k_max_objects=self.config.worker.actor.model.k_slots,
                     mode=mode,
                     prompt_key=self.config.data.prompt_key,

@@ -21,16 +21,18 @@ prefix(){ printf '%s' "${ROOT_DIR:+${ROOT_DIR%/}/}$1"; }
 ######## Disable NCCL InfiniBand/RDMA and wandb ########
 export NCCL_IB_DISABLE=1; export WANDB_MODE=offline; export WANDB_DIR="$(prefix 'wandb')"
 
+MODEL_PATH="${MODEL_PATH:-Qwen/Qwen2.5-VL-7B-Instruct}"
+INIT_SAE_CKPT="${INIT_SAE_CKPT:-sae_checkpoints/sae_qwen-7b_L13/default/ep_6.pt}"
+
 ######## Grouped CLI args ########
 ARGS=(
   ### paths ###
   data.train_files="$(prefix 'data/grefcoco/grefcoco_train')"
-  data.sam_embed_dir="$(prefix 'data/refcoco_series_sam_embed')"
-  worker.actor.model.model_path="$(prefix 'pretrained_models/SegCompass-qwen-7b-init')"
-  worker.actor.model.init_sae_ckpt="$(prefix 'sae_checkpoints/sae_qwen-7b_L13/default/ep_6.pt')"
+  data.video_embed_dir="$(prefix 'data/refcoco_series_video_embed')"
+  worker.actor.model.model_path="${MODEL_PATH}"
+  worker.actor.model.init_sae_ckpt="$(prefix "${INIT_SAE_CKPT}")"
 
   trainer.save_checkpoint_path="$(prefix "checkpoints/${RUN_NAME}/${RUN_FLAG}")"
-  worker.actor.model.init_sam_ckpt="$(prefix 'pretrained_models/sam_vit_h_4b8939.pth')"
   trainer.load_checkpoint_path=null
   config="scripts/initial.yaml"
 

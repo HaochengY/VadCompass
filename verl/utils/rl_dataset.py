@@ -31,6 +31,9 @@ from verl.utils.torch_functional import pad_sequence_to_length
 from verl.models.transformers.qwen2_5_vl import get_rope_index
 
 
+REF_POS_TOKEN = os.environ.get("SEGCOMPASS_REF_POS_TOKEN", "<REF_POS>")
+
+
 class GetCollate:
     def __init__(self, tokenizer, llm_version):
         self.tokenizer = tokenizer
@@ -101,7 +104,7 @@ class RLHFDataset(Dataset):
             tokenizer: PreTrainedTokenizer,
             processor: Optional[ProcessorMixin],
             llm_version: str,  # in "qwen-2.5" or "llava-1.5"
-            sam_embed_dir: str = "",
+            video_embed_dir: Optional[str] = "",
             k_max_objects: int = 1,
             mode: str = "train",  # in "train" and "eval"
             prompt_key="prompt",
@@ -124,21 +127,36 @@ class RLHFDataset(Dataset):
         self.min_pixels = min_pixels
 
         self.is_multi_object = (k_max_objects > 1)
-        self.sam_embed_root = sam_embed_dir if os.path.isdir(sam_embed_dir) else None
+        self.video_embed_root = video_embed_dir if video_embed_dir and os.path.isdir(video_embed_dir) else None
         self.dataset = load_from_disk(data_anno_path)
+        self.is_video_emb_dataset = "video_emb_path" in self.dataset.column_names
 
-        if self.is_multi_object:
+        if self.is_video_emb_dataset:
+            self.dataset_len = len(self.dataset)
+            k = int(self.k_max_objects)
+            pos_tokens = " ".join([REF_POS_TOKEN] * k)
+            tmpl = (
+                "<video> Please analyze the video for '{Question}'.\n"
+                "Output the thinking process in <think> </think>.\n"
+                f"Then output exactly {{K}} reference position tokens, each written as {REF_POS_TOKEN}.\n"
+                "Format:\n"
+                "<think> your reasoning here </think>\n"
+                "Here are the {K} reference positions (K={K}):\n"
+                "{POS_TOKENS}"
+            )
+            self.user_prompt = tmpl.replace("{K}", str(k)).replace("{POS_TOKENS}", pos_tokens)
+        elif self.is_multi_object:
             k = int(self.k_max_objects)
             ds_ids = self.dataset.select_columns(["ann_id"])
             self._valid_idx = [i for i, x in enumerate(ds_ids) if len(x["ann_id"]) <= k]
             self.dataset_len = len(self._valid_idx)
 
-            pos_tokens = " ".join(["<REF_POS>"] * k)
+            pos_tokens = " ".join([REF_POS_TOKEN] * k)
             tmpl = (
                 "<image> Please find '{Question}' in the image.\n"
                 "Compare the difference between object(s) and find the most closely matched object(s).\n"
                 "Output the thinking process in <think> </think>.\n"
-                "Then output exactly {K} reference position tokens, each written as <REF_POS>.\n"
+                f"Then output exactly {{K}} reference position tokens, each written as {REF_POS_TOKEN}.\n"
                 "These special tokens will be used to predict segmentation masks.\n"
                 "Format:\n"
                 "<think> your reasoning here </think>\n"
@@ -153,22 +171,52 @@ class RLHFDataset(Dataset):
                 "<image> Please find '{Question}' in the image.\n"
                 "Compare the difference between objects and find the most closely matched one.\n"
                 "Output the thinking process in <think> </think>.\n"
-                "Then generate one reference position token: <REF_POS>\n"
+                f"Then generate one reference position token: {REF_POS_TOKEN}\n"
                 "This special token will be used to predict a segmentation mask.\n"
                 "Format:\n"
                 "<think> your reasoning here </think>\n"
-                "Here is the reference position: <REF_POS>"
+                f"Here is the reference position: {REF_POS_TOKEN}"
             )
 
     def __len__(self):
         return self.dataset_len
 
     def _arrange_common_keys(self, row_dict):
-        if self.sam_embed_root is not None:
-            embed_filename = os.path.join(self.sam_embed_root, row_dict["embed_path"])
-            row_dict["sam_embed"] = torch.load(embed_filename, map_location="cpu")
-        elif "sam_embed" in row_dict:
-            row_dict["sam_embed"] = torch.as_tensor(row_dict["sam_embed"], dtype=torch.float16)
+        if "video_emb_path" in row_dict:
+            video_obj = torch.load(row_dict["video_emb_path"], map_location="cpu")
+            video_emb = video_obj["video_emb"] if isinstance(video_obj, dict) else video_obj
+            video_grid = row_dict.get("video_grid_thw")
+            if isinstance(video_obj, dict) and "video_grid_thw" in video_obj:
+                video_grid = video_obj["video_grid_thw"].reshape(-1).tolist()
+            if video_grid is not None:
+                t, h, w = [int(x) for x in video_grid]
+                video_emb = video_emb.reshape(t, h * w, video_emb.shape[-1])
+            row_dict["video_embed"] = video_emb.contiguous().to(torch.float16)
+            row_dict["image_id"] = torch.as_tensor(abs(hash(row_dict["video_filename"])) % (2 ** 31), dtype=torch.long)
+            row_dict["original_hw"] = torch.as_tensor([0, 0], dtype=torch.long)
+            row_dict["unpadded_hw"] = torch.as_tensor([0, 0], dtype=torch.long)
+            row_dict["mask_float_256"] = torch.zeros(self.k_max_objects, 256, 256, dtype=torch.float32)
+            row_dict["n_multi_objects"] = torch.as_tensor(0, dtype=torch.int64)
+            if "frame_labels" in row_dict:
+                row_dict["frame_labels"] = torch.as_tensor(row_dict["frame_labels"], dtype=torch.float32)
+            return row_dict
+
+        if "videos" in row_dict and "mask_float_256" not in row_dict:
+            video_name = row_dict.get("video_filename") or row_dict.get("video_path") or row_dict.get("raw_prompt", "")
+            row_dict["image_id"] = torch.as_tensor(abs(hash(str(video_name))) % (2 ** 31), dtype=torch.long)
+            row_dict["original_hw"] = torch.as_tensor([0, 0], dtype=torch.long)
+            row_dict["unpadded_hw"] = torch.as_tensor([0, 0], dtype=torch.long)
+            row_dict["mask_float_256"] = torch.zeros(self.k_max_objects, 256, 256, dtype=torch.float32)
+            row_dict["n_multi_objects"] = torch.as_tensor(0, dtype=torch.int64)
+            if "frame_labels" in row_dict:
+                row_dict["frame_labels"] = torch.as_tensor(row_dict["frame_labels"], dtype=torch.float32)
+            return row_dict
+
+        if self.video_embed_root is not None:
+            embed_filename = os.path.join(self.video_embed_root, row_dict["embed_path"])
+            row_dict["video_embed"] = torch.load(embed_filename, map_location="cpu")
+        elif "video_embed" in row_dict:
+            row_dict["video_embed"] = torch.as_tensor(row_dict["video_embed"], dtype=torch.float16)
 
         row_dict["image_id"] = torch.as_tensor(int(row_dict["image_id"]), dtype=torch.long)
         row_dict["original_hw"] = torch.as_tensor([int(x) for x in row_dict["original_hw"]], dtype=torch.long)
@@ -306,7 +354,7 @@ class RLHFDataset(Dataset):
         )
 
     def __getitem__(self, index):
-        idx = self._valid_idx[index] if self.is_multi_object else index
+        idx = self._valid_idx[index] if (self.is_multi_object and not self.is_video_emb_dataset) else index
         row_dict: Dict = self.dataset[idx]
         prob_key = self.prompt_key if self.prompt_key in row_dict else ("problem" if "problem" in row_dict else "text")
         texts = row_dict[prob_key]

@@ -20,6 +20,7 @@ from typing import Literal
 import torch
 import os
 import torch.distributed as dist
+from contextlib import nullcontext
 from torch.optim.lr_scheduler import OneCycleLR
 from accelerate import init_empty_weights
 from codetiming import Timer
@@ -29,13 +30,16 @@ from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
 from transformers import (
     AutoConfig,
     AutoModelForCausalLM,
+    AutoModelForImageTextToText,
     AutoModelForTokenClassification,
-    AutoModelForVision2Seq,
     GenerationConfig,
     PreTrainedModel,
     Qwen2_5_VLForConditionalGeneration,
 )
-from transformers.modeling_utils import no_init_weights
+try:
+    from transformers.modeling_utils import no_init_weights
+except ImportError:
+    no_init_weights = nullcontext
 
 from verl import DataProto
 from verl.single_controller.base import Worker
@@ -174,11 +178,11 @@ class FSDPWorker(Worker):
         )
         self.llm_model_config.torch_dtype = torch_dtype
 
-        model_map_keys = AutoModelForVision2Seq._model_mapping.keys()
+        model_map_keys = AutoModelForImageTextToText._model_mapping.keys()
         if self._is_critic:
             auto_class = AutoModelForTokenClassification
         elif type(self.llm_model_config) in model_map_keys or isinstance(self.llm_model_config, tuple(model_map_keys)):
-            auto_class = AutoModelForVision2Seq
+            auto_class = AutoModelForImageTextToText
         else:
             auto_class = AutoModelForCausalLM
 
@@ -267,7 +271,6 @@ class FSDPWorker(Worker):
             k_slots=self.config.actor.model.k_slots,
             sae_cfg=self.config.sae,
             init_sae_ckpt=(model_config.init_sae_ckpt if self.rank == 0 else None),
-            init_sam_ckpt=(model_config.init_sam_ckpt if self.rank == 0 else None),
             tokenizer=self.tokenizer,
             is_trainable=True,
             dtype=PrecisionType.to_dtype("bf16", self.config.supp_bf16)
@@ -275,8 +278,6 @@ class FSDPWorker(Worker):
         set_trainable(core_model.sae, False)
         set_trainable(core_model.query_book, True)
         set_trainable(core_model.heatmap_head, True)
-        set_trainable(core_model.prompt_encoder, True)
-        set_trainable(core_model.mask_decoder, True)
 
         self.fsdp_module = FSDP(
             core_model,
@@ -295,7 +296,6 @@ class FSDPWorker(Worker):
         base_lr = optim_config.base_lr
         lr_querybook = base_lr * optim_config.lr_qb_rate
         lr_llm, lr_head = base_lr, base_lr * optim_config.lr_head_rate
-        lr_pe, lr_decoder = base_lr * optim_config.lr_pe_rate, base_lr * optim_config.lr_decoder_rate
         param_groups = []
 
         def trainable_params(m):
@@ -308,10 +308,6 @@ class FSDPWorker(Worker):
         if ps: param_groups.append({"params": ps, "lr": lr_querybook, "name": "query_book"})
         ps = trainable_params(core.heatmap_head)
         if ps: param_groups.append({"params": ps, "lr": lr_head, "name": "head"})
-        ps = trainable_params(core.prompt_encoder)
-        if ps: param_groups.append({"params": ps, "lr": lr_pe, "name": "pe"})
-        ps = trainable_params(core.mask_decoder)
-        if ps: param_groups.append({"params": ps, "lr": lr_decoder, "name": "dec"})
 
         if self._is_actor or self._is_critic:
             self.optimizer = torch.optim.AdamW(
@@ -420,7 +416,7 @@ class FSDPWorker(Worker):
                 lr_scheduler=self.lr_scheduler,
                 tokenizer=self.tokenizer,
                 processor=self.processor,
-                extra_module_names=["sae", "query_book", "heatmap_head", "prompt_encoder", "mask_decoder"],
+                extra_module_names=["sae", "query_book", "heatmap_head"],
                 llm_fsdp=self.fsdp_llm,
             )
 

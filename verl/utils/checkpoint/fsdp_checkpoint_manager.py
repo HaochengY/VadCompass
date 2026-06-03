@@ -39,7 +39,7 @@ class FSDPCheckpointManager(BaseCheckpointManager):
     - extra_states (rng, etc.)
 
     Optional (rank 0 only):
-    - exports a flat state_dict of specified refseg submodules (e.g., heatmap_head/prompt_encoder/mask_decoder)
+    - exports a flat state_dict of specified refseg submodules (e.g., heatmap_head)
       to “refseg_modules.pt” with keys like 'heatmap_head.xxx'. No extra manifest/json needed.
     - save fsdp
     """

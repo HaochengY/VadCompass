@@ -1,13 +1,17 @@
 import re
+import os
 import torch
+
+
+REF_POS_TOKEN = os.environ.get("SEGCOMPASS_REF_POS_TOKEN", "<REF_POS>")
 
 
 def format_reward(tokens: str) -> float:
     """Compute a format score in {0.0, 0.9, 1.0}:
     - Return 0.0 unless ALL hard rules pass:
       (1) exactly one <think>...</think> with non-empty content,
-      (2) exactly one <REF_POS>,
-      (3) <REF_POS> appears after </think>.
+      (2) exactly one reference-position token,
+      (3) the reference-position token appears after </think>.
     - If hard rules pass, start from 1.0 and downgrade to 0.9 if either:
       (a) the <think> content is overly long (> 2048 chars), or
       (b) there is any non-whitespace text before <think> or after <REF_POS>.
@@ -20,7 +24,7 @@ def format_reward(tokens: str) -> float:
     if not re.search(r"\S", think_content or ""):
         return 0.0
 
-    ref_tag = "<REF_POS>"
+    ref_tag = REF_POS_TOKEN
     if tokens.count(ref_tag) != 1:
         return 0.0
     ref_idx = tokens.find(ref_tag)
