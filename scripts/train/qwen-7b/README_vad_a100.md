@@ -77,6 +77,25 @@ bash scripts/train/qwen-7b/qwen_vad_a100_n8.sh \
   --run-flag vad_a100
 ```
 
+2x A100 sanity run on physical CUDA devices 1 and 2:
+
+```bash
+CUDA_VISIBLE_DEVICES=1,2 bash scripts/train/qwen-7b/qwen_vad_a100_n8.sh \
+  --data data/<your_vad_train_dataset> \
+  --model /path/to/Qwen2.5-VL-7B-Instruct \
+  --sae null \
+  --run-flag sanity_cuda1_2 \
+  --n-gpus 2 \
+  --tp-size 2 \
+  --rollout-n 1 \
+  --rollout-batch-size 2 \
+  --global-batch-size 2 \
+  --micro-update 1 \
+  --micro-experience 1 \
+  --total-episodes 1 \
+  --save-freq -1
+```
+
 If you do not want to load an SAE checkpoint:
 
 ```bash

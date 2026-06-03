@@ -11,6 +11,7 @@ MODEL_PATH="${MODEL_PATH:-Qwen/Qwen2.5-VL-7B-Instruct}"
 INIT_SAE_CKPT="${INIT_SAE_CKPT:-sae_checkpoints/sae_qwen-7b_L13/default/ep_6.pt}"
 
 BF16=true
+N_GPUS=8
 TOTAL_EPISODES=4
 SAVE_FREQ=400
 ROLLOUT_N=8
@@ -36,6 +37,7 @@ Options:
   --sae PATH|null            SAE checkpoint path, or null to disable loading.
   --run-flag NAME            Checkpoint/log suffix. Default: default
   --bf16 true|false          Use bf16/FLASH_ATTN on A100. Default: true
+  --n-gpus N                 Number of visible GPUs used by trainer. Default: 8
   --total-episodes N         Default: 4
   --save-freq N              Default: 400
   --rollout-n N              Default: 8
@@ -60,6 +62,7 @@ while [ $# -gt 0 ]; do
     --sae) INIT_SAE_CKPT="$2"; shift 2 ;;
     --run-flag) RUN_FLAG="$2"; shift 2 ;;
     --bf16) BF16="$2"; shift 2 ;;
+    --n-gpus) N_GPUS="$2"; shift 2 ;;
     --total-episodes) TOTAL_EPISODES="$2"; shift 2 ;;
     --save-freq) SAVE_FREQ="$2"; shift 2 ;;
     --rollout-n) ROLLOUT_N="$2"; shift 2 ;;
@@ -148,7 +151,7 @@ ARGS=(
   worker.actor.adjust_loss_step=1500
   worker.actor.entropy_coef=0.0
 
-  trainer.n_gpus_per_node=8
+  trainer.n_gpus_per_node="${N_GPUS}"
   trainer.total_episodes="${TOTAL_EPISODES}"
   trainer.save_freq="${SAVE_FREQ}"
   trainer.val_before_train=false
@@ -163,6 +166,7 @@ LOG_PATH="print_log_${RUN_NAME}_${RUN_FLAG}.txt"
 echo "Root: $ROOT_DIR"
 echo "Python: $PY"
 echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
+echo "Trainer GPUs: $N_GPUS"
 echo "Model: $MODEL_PATH"
 echo "Data: $(prefix "$DATA_PATH")"
 echo "Vision features: on-the-fly Qwen2.5-VL ViT"
