@@ -7,8 +7,8 @@ The old SAM segmentation path has been removed. The VAD path extracts visual fea
 ## Files
 
 - `qwen_vad_a100_n8.sh`: recommended 8x A100 launch script.
-- `gref_qwen-7b_n8_10_smoke.sh`: 1-GPU smoke script for small data/debugging.
-- `gref_qwen-7b_n8.sh`: older 8-GPU script kept for compatibility.
+- `gref_qwen-7b_n8_10_smoke.sh`: legacy 1-GPU smoke script for small data/debugging.
+- `gref_qwen-7b_n8.sh`: compatibility path now wired to the 2-GPU SHT VAD setup.
 
 ## Expected Workspace
 
@@ -86,6 +86,7 @@ CUDA_VISIBLE_DEVICES=1,2 bash scripts/train/qwen-7b/qwen_vad_a100_n8.sh \
   --sae null \
   --run-flag sanity_cuda1_2 \
   --n-gpus 2 \
+  --k-slots 1 \
   --tp-size 2 \
   --rollout-n 1 \
   --rollout-batch-size 2 \
@@ -159,9 +160,9 @@ mkdir -p "$RAY_TMPDIR"
 
 The launch script uses `RAY_TMPDIR` if it is set.
 
-### SAM Errors
+### Historical SAM Errors
 
-The VAD path should not import SAM. These strings should not appear in the training path:
+The VAD path should not import SAM. If an old log or old checkout fails with one of these strings, you are likely not running the current VAD entrypoint:
 
 ```text
 segment_anything
@@ -172,4 +173,4 @@ mask_decoder
 sam_embed
 ```
 
-If they appear, you are likely running an old script or an old checkout.
+The current VAD launch scripts do not require these modules or checkpoints.

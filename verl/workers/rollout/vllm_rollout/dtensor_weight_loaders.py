@@ -272,6 +272,8 @@ def qwen2vl_dtensor_weight_loader(actor_weights: Dict[str, torch.Tensor], vllm_m
                 continue  # skip loading extra bias for GPTQ models
 
             local_actor_weight = redistribute_dtensor(param_name=actor_name, loaded_weights=actor_weight)
+            if vllm_name not in vllm_params:
+                continue
             vllm_param = vllm_params[vllm_name]
             weight_loader = vllm_param.weight_loader
             weight_loader(vllm_param, local_actor_weight.to(dtype=vllm_param.dtype), shard_id)
@@ -285,6 +287,8 @@ def qwen2vl_dtensor_weight_loader(actor_weights: Dict[str, torch.Tensor], vllm_m
             else:
                 vllm_name = "language_model." + actor_name
 
+            if vllm_name not in vllm_params:
+                continue
             vllm_param = vllm_params[vllm_name]
             local_actor_weight = redistribute_dtensor(param_name=actor_name, loaded_weights=actor_weight)
             weight_loader = getattr(vllm_param, "weight_loader", default_weight_loader)

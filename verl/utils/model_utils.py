@@ -76,6 +76,8 @@ def get_decoder_layers(model):
 
     for p in (
         "language_model.model.layers",
+        "model.language_model.layers",
+        "language_model.layers",
         "model.model.layers",
         "model.layers",
         "transformer.h",

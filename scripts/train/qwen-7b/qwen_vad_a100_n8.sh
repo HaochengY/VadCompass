@@ -12,6 +12,7 @@ INIT_SAE_CKPT="${INIT_SAE_CKPT:-sae_checkpoints/sae_qwen-7b_L13/default/ep_6.pt}
 
 BF16=true
 N_GPUS=8
+K_SLOTS=1
 TOTAL_EPISODES=4
 SAVE_FREQ=400
 ROLLOUT_N=8
@@ -38,6 +39,7 @@ Options:
   --run-flag NAME            Checkpoint/log suffix. Default: default
   --bf16 true|false          Use bf16/FLASH_ATTN on A100. Default: true
   --n-gpus N                 Number of visible GPUs used by trainer. Default: 8
+  --k-slots N                Number of VAD slots. Default: 1
   --total-episodes N         Default: 4
   --save-freq N              Default: 400
   --rollout-n N              Default: 8
@@ -63,6 +65,7 @@ while [ $# -gt 0 ]; do
     --run-flag) RUN_FLAG="$2"; shift 2 ;;
     --bf16) BF16="$2"; shift 2 ;;
     --n-gpus) N_GPUS="$2"; shift 2 ;;
+    --k-slots) K_SLOTS="$2"; shift 2 ;;
     --total-episodes) TOTAL_EPISODES="$2"; shift 2 ;;
     --save-freq) SAVE_FREQ="$2"; shift 2 ;;
     --rollout-n) ROLLOUT_N="$2"; shift 2 ;;
@@ -129,7 +132,7 @@ ARGS=(
   worker.llm_version="qwen-2.5"
   worker.actor.model.model_path="${MODEL_PATH}"
   worker.actor.model.init_sae_ckpt="${SAE_ARG}"
-  worker.actor.model.k_slots=4
+  worker.actor.model.k_slots="${K_SLOTS}"
   worker.sae.d_in=3584
   worker.sae.hook_layer=13
   worker.supp_bf16="${BF16}"

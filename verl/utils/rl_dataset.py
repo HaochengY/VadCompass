@@ -93,6 +93,20 @@ def process_image(image: ImageObject, max_pixels: int, min_pixels: int) -> Image
     return image
 
 
+def process_video_for_vllm(video: Any) -> Any:
+    if not isinstance(video, torch.Tensor):
+        return video
+
+    frames = video.detach().cpu()
+    if frames.ndim == 4 and frames.shape[1] in (1, 3, 4):
+        frames = frames.permute(0, 2, 3, 1)
+
+    frames_np = frames.numpy()
+    if frames_np.dtype != np.uint8:
+        frames_np = np.clip(frames_np, 0, 255).astype(np.uint8)
+    return frames_np
+
+
 class RLHFDataset(Dataset):
     """
     We assume the dataset contains a column that contains prompts and other information
@@ -182,8 +196,11 @@ class RLHFDataset(Dataset):
         return self.dataset_len
 
     def _arrange_common_keys(self, row_dict):
-        if "video_emb_path" in row_dict:
-            video_obj = torch.load(row_dict["video_emb_path"], map_location="cpu")
+        if "video_emb_path" in row_dict and self.video_embed_root is not None:
+            video_emb_path = row_dict["video_emb_path"]
+            if not os.path.isabs(video_emb_path):
+                video_emb_path = os.path.join(self.video_embed_root, video_emb_path)
+            video_obj = torch.load(video_emb_path, map_location="cpu")
             video_emb = video_obj["video_emb"] if isinstance(video_obj, dict) else video_obj
             video_grid = row_dict.get("video_grid_thw")
             if isinstance(video_obj, dict) and "video_grid_thw" in video_obj:
@@ -213,7 +230,8 @@ class RLHFDataset(Dataset):
             return row_dict
 
         if self.video_embed_root is not None:
-            embed_filename = os.path.join(self.video_embed_root, row_dict["embed_path"])
+            embed_path = row_dict.get("embed_path") or row_dict.get("video_emb_path")
+            embed_filename = embed_path if os.path.isabs(embed_path) else os.path.join(self.video_embed_root, embed_path)
             row_dict["video_embed"] = torch.load(embed_filename, map_location="cpu")
         elif "video_embed" in row_dict:
             row_dict["video_embed"] = torch.as_tensor(row_dict["video_embed"], dtype=torch.float16)
@@ -308,6 +326,8 @@ class RLHFDataset(Dataset):
                 "video_grid_thw": video_grid_thw,
             }
         )
+        if video_inputs is not None:
+            row_dict["videos"] = [process_video_for_vllm(video) for video in video_inputs]
         if image_grid_thw is not None or video_grid_thw is not None:
             position_ids = get_rope_index(
                 self.processor,
@@ -399,7 +419,7 @@ def build_sae_llm_inputs(tokenizer, processor, llm_version, data: DataProto):
         resp_ids = responses[b]
         joined = torch.cat([base_ids, resp_ids], dim=0)
 
-        # Right truncation and left pad, the sam in qwen-2.5 and llava-1.5
+        # Right truncation and left pad, the same in qwen-2.5 and llava-1.5
         if joined.size(0) > L:
             joined = joined[:L]
         am = torch.ones(joined.size(0), dtype=attention_mask.dtype, device=joined.device)

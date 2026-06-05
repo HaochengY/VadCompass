@@ -68,7 +68,7 @@ class VLRefSegCore(nn.Module):
             self._vision_hook_handle = visual.register_forward_hook(self._capture_vision_features)
 
     def _capture_vision_features(self, _module, _inputs, output):
-        self._last_vision_features = output
+        self._last_vision_features = self._select_vision_features(output)
 
     def get_ref_vec(self, llm_input_ids, last_hidden_state):
         # last K <REF_POS> per sample, pad zeros if fewer than K
@@ -109,6 +109,8 @@ class VLRefSegCore(nn.Module):
 
         if video_embed is None:
             video_embed = image_embed
+        if self._looks_like_raw_pixels(video_embed):
+            video_embed = None
         if video_embed is None and forward_seg:
             video_embed = self.extract_vision_embed(**llm_inputs)
 
@@ -141,9 +143,44 @@ class VLRefSegCore(nn.Module):
             model = model.module
         return model
 
+    def _looks_like_raw_pixels(self, value):
+        if not torch.is_tensor(value):
+            return False
+        if value.dim() == 3:
+            return value.size(-1) in (1, 3, 4)
+        if value.dim() == 4:
+            return value.size(-1) in (1, 3, 4)
+        if value.dim() == 5:
+            return value.size(2) in (1, 3, 4) or value.size(-1) in (1, 3, 4)
+        return False
+
+    def _select_vision_features(self, output):
+        target_dim = int(getattr(self.heatmap_head, "video_dim", 0) or 0)
+
+        def valid_feature(tensor):
+            return (
+                torch.is_tensor(tensor)
+                and tensor.dim() >= 2
+                and tensor.size(-1) == target_dim
+                and not self._looks_like_raw_pixels(tensor)
+            )
+
+        if hasattr(output, "pooler_output") and valid_feature(output.pooler_output):
+            return output.pooler_output
+        if valid_feature(output):
+            return output
+        if isinstance(output, (tuple, list)):
+            for tensor in output:
+                if valid_feature(tensor):
+                    return tensor
+        return None
+
     def _pack_visual_features(self, features, grid_thw, merge_size=1):
         if hasattr(features, "pooler_output"):
             features = features.pooler_output
+        features = self._select_vision_features(features)
+        if features is None:
+            return None
         if torch.is_tensor(features):
             split_sizes = (grid_thw.prod(-1) // (int(merge_size) ** 2)).tolist()
             features = torch.split(features, split_sizes)
@@ -183,12 +220,16 @@ class VLRefSegCore(nn.Module):
             if self._last_vision_features is not None and pixel_values_videos is not None and video_grid_thw is not None:
                 features = self._last_vision_features
                 self._last_vision_features = None
-                return self._pack_visual_features(features, video_grid_thw, merge_size).detach()
+                packed = self._pack_visual_features(features, video_grid_thw, merge_size)
+                if packed is not None:
+                    return packed.detach()
 
             if self._last_vision_features is not None and pixel_values is not None and image_grid_thw is not None:
                 features = self._last_vision_features
                 self._last_vision_features = None
-                return self._pack_visual_features(features, image_grid_thw, merge_size).detach()
+                packed = self._pack_visual_features(features, image_grid_thw, merge_size)
+                if packed is not None:
+                    return packed.detach()
 
         raise ValueError("video_embed is missing and no Qwen vision inputs are available for on-the-fly extraction")
 
@@ -275,6 +316,18 @@ class SlotAttnTemporalHead(nn.Module):
             nn.Linear(llm_dim // 2, 1),
         )
 
+    @staticmethod
+    def _looks_like_raw_pixels(value):
+        if not torch.is_tensor(value):
+            return False
+        if value.dim() == 3:
+            return value.size(-1) in (1, 3, 4)
+        if value.dim() == 4:
+            return value.size(-1) in (1, 3, 4)
+        if value.dim() == 5:
+            return value.size(2) in (1, 3, 4) or value.size(-1) in (1, 3, 4)
+        return False
+
     def forward(
         self,
         ref_vec: torch.Tensor,
@@ -286,15 +339,13 @@ class SlotAttnTemporalHead(nn.Module):
             video_embed = image_embed
         if video_embed is None:
             raise ValueError("video_embed is required")
+        if self._looks_like_raw_pixels(video_embed):
+            raise ValueError(
+                f"video_embed must be ViT features with last dim {self.video_dim}, "
+                f"got raw pixel tensor shape {tuple(video_embed.shape)}"
+            )
         if video_embed.dim() == 3:
             video_embed = video_embed.unsqueeze(1)  # [B,L,D] -> [B,1,L,D]
-        elif video_embed.dim() == 4:
-            # Backward-compatible path for [B,C,H,W]. Prefer [B,N,L,D_video] for video training.
-            video_embed = video_embed.flatten(2).transpose(1, 2).unsqueeze(1).contiguous()
-        elif video_embed.dim() == 5:
-            # Backward-compatible path for [B,N,C,H,W].
-            B0, N0, C0, H0, W0 = video_embed.shape
-            video_embed = video_embed.flatten(3).transpose(2, 3).reshape(B0, N0, H0 * W0, C0).contiguous()
         if video_embed.dim() != 4:
             raise ValueError(f"video_embed must be [B,N,L,D_video], got shape {tuple(video_embed.shape)}")
         # shapes
@@ -423,7 +474,7 @@ def build_VLRefSegCore(
     if token_embed_dim is None:
         token_embed_dim = llm.get_input_embeddings().embedding_dim
 
-    query_book = QueryBookAttnHead(k_slots=k_slots)
+    query_book = QueryBookAttnHead(k_slots=k_slots, sae_dim=sae_cfg.d_sae)
     heatmap_head = SlotAttnTemporalHead(
         llm_dim=token_embed_dim,
         querybook_dim=query_book.querybook_dim,

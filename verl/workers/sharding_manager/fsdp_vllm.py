@@ -28,6 +28,12 @@ from verl.workers.rollout.vllm_rollout import load_dtensor_weights
 from .base import BaseShardingManager
 
 
+def _get_vllm_tp_group():
+    if hasattr(vllm_ps, "get_tensor_model_parallel_group"):
+        return vllm_ps.get_tensor_model_parallel_group().device_group
+    return vllm_ps.get_tp_group().device_group
+
+
 class FSDPVLLMShardingManager(BaseShardingManager):
     def __init__(
         self,
@@ -88,7 +94,7 @@ class FSDPVLLMShardingManager(BaseShardingManager):
             torch.cuda.set_rng_state(self.torch_random_states)
 
     def preprocess_data(self, data: DataProto) -> DataProto:
-        tp_group = vllm_ps.get_tensor_model_parallel_group().device_group
+        tp_group = _get_vllm_tp_group()
         data = data.to("cuda")
         data.all_gather(tp_group)
         return data

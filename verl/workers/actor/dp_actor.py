@@ -77,6 +77,14 @@ class DataParallelPPOActor(BasePPOActor):
         position_ids = micro_batch["position_ids"]
         responses = micro_batch["responses"]
         image_embed = micro_batch.get("video_embed") if forward_seg else None
+        if torch.is_tensor(image_embed):
+            is_flat_pixels = image_embed.dim() == 3 and image_embed.size(-1) in (1, 3, 4)
+            is_image_pixels = image_embed.dim() == 4 and image_embed.size(-1) in (1, 3, 4)
+            is_video_pixels = image_embed.dim() == 5 and (
+                image_embed.size(2) in (1, 3, 4) or image_embed.size(-1) in (1, 3, 4)
+            )
+            if is_flat_pixels or is_image_pixels or is_video_pixels:
+                image_embed = None
         unpadded_hw = micro_batch["unpadded_hw"] if forward_seg else None
         response_length = responses.size(-1)
         if position_ids.dim() == 3:  # qwen2vl mrope
