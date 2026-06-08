@@ -40,10 +40,12 @@ class FSDPVLLMShardingManager(BaseShardingManager):
         module: FSDP,
         inference_engine: LLM,
         device_mesh: DeviceMesh = None,
+        use_lora: bool = False,
     ):
         self.module = module
         self.inference_engine = inference_engine
         self.device_mesh = device_mesh
+        self.use_lora = use_lora
         FSDP.set_state_dict_type(
             self.module,
             state_dict_type=StateDictType.SHARDED_STATE_DICT,
@@ -62,17 +64,29 @@ class FSDPVLLMShardingManager(BaseShardingManager):
             self.gen_random_states = None
 
     def __enter__(self):
-        log_gpu_memory_usage("Before state_dict() in sharding manager")
-        actor_weights = self.module.state_dict()
-        log_gpu_memory_usage("After state_dict() in sharding manager")
+        actor_weights = None
+        if self.use_lora:
+            with FSDP.summon_full_params(self.module, recurse=True, writeback=True, rank0_only=False):
+                peft_model = self.module.module
+                peft_model.merge_adapter()
+        try:
+            log_gpu_memory_usage("Before state_dict() in sharding manager")
+            actor_weights = self.module.state_dict()
+            log_gpu_memory_usage("After state_dict() in sharding manager")
 
-        self.inference_engine.wake_up()
-        load_dtensor_weights(
-            actor_weights, self.inference_engine.llm_engine.model_executor.driver_worker.worker.model_runner.model
-        )
+            self.inference_engine.wake_up()
+            load_dtensor_weights(
+                actor_weights, self.inference_engine.llm_engine.model_executor.driver_worker.worker.model_runner.model
+            )
+        finally:
+            if self.use_lora:
+                with FSDP.summon_full_params(self.module, recurse=True, writeback=True, rank0_only=False):
+                    peft_model = self.module.module
+                    peft_model.unmerge_adapter()
         log_gpu_memory_usage("After sync model weights in sharding manager")
 
-        del actor_weights
+        if actor_weights is not None:
+            del actor_weights
         torch.cuda.empty_cache()
         log_gpu_memory_usage("After del state_dict and empty_cache in sharding manager")
         # important: need to manually set the random states of each tp to be identical.

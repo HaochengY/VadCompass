@@ -27,6 +27,7 @@ from codetiming import Timer
 from torch.distributed.device_mesh import init_device_mesh
 from torch.distributed.fsdp import CPUOffload, MixedPrecision, ShardingStrategy
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+from peft import LoraConfig, get_peft_model
 from transformers import (
     AutoConfig,
     AutoModelForCausalLM,
@@ -211,13 +212,42 @@ class FSDPWorker(Worker):
                     trust_remote_code=model_config.trust_remote_code,
                 )
 
-        # Set only the parameters after sae hooked layer trainable
-        for p in llm_model.parameters(): p.requires_grad_(False)
-        start = int(self.config.sae.hook_layer) + 1
-        for layer in get_decoder_layers(llm_model)[start:]:
-            for p in layer.parameters(): p.requires_grad_(True)
+        # Keep the original partial fine-tuning behavior unless LoRA is explicitly enabled.
+        for p in llm_model.parameters():
+            p.requires_grad_(False)
+        if model_config.use_lora and self._is_actor:
+            target_modules = [
+                name.strip()
+                for name in model_config.lora_target_modules.split(",")
+                if name.strip()
+            ]
+            llm_model = get_peft_model(
+                llm_model,
+                LoraConfig(
+                    r=model_config.lora_rank,
+                    lora_alpha=model_config.lora_alpha,
+                    lora_dropout=model_config.lora_dropout,
+                    target_modules=target_modules,
+                    bias="none",
+                    task_type="CAUSAL_LM",
+                ),
+            )
+            visual_param_count = 0
+            for name, param in llm_model.named_parameters():
+                if name.startswith("visual.") or ".visual." in name:
+                    param.requires_grad_(False)
+                    visual_param_count += param.numel()
+            if self.rank == 0:
+                print(f"Frozen ViT parameters: {visual_param_count:,}")
+                llm_model.print_trainable_parameters()
+        else:
+            start = int(self.config.sae.hook_layer) + 1
+            for layer in get_decoder_layers(llm_model)[start:]:
+                for p in layer.parameters():
+                    p.requires_grad_(True)
 
-        assert isinstance(llm_model, PreTrainedModel)  # lint
+        base_llm_model = llm_model.get_base_model() if hasattr(llm_model, "get_base_model") else llm_model
+        assert isinstance(base_llm_model, PreTrainedModel)  # lint
         llm_model.tie_weights()  # avoid hanging
         llm_model = llm_model.to(torch_dtype)
         if model_config.enable_gradient_checkpointing:
@@ -359,6 +389,7 @@ class FSDPWorker(Worker):
             module=self.fsdp_llm,
             inference_engine=self.rollout.inference_engine,
             device_mesh=rollout_device_mesh,
+            use_lora=self.config.actor.model.use_lora and self._is_actor,
         )
         log_gpu_memory_usage("After building sharding manager")
 

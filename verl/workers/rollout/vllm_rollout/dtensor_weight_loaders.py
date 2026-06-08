@@ -254,6 +254,9 @@ def qwen2vl_dtensor_weight_loader(actor_weights: Dict[str, torch.Tensor], vllm_m
     ]
     vllm_params = dict(vllm_model.named_parameters(remove_duplicate=False))
     for actor_name, actor_weight in actor_weights.items():
+        if ".lora_" in actor_name:
+            continue
+        actor_name = actor_name.replace("base_model.model.", "").replace(".base_layer.", ".")
         if "rotary_emb.inv_freq" in actor_name:
             continue
 

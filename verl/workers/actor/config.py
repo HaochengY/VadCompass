@@ -28,6 +28,11 @@ class ModelConfig:
     trust_remote_code: bool = True
     init_sae_ckpt: Optional[str] = "pretrained_models/sae"
     k_slots: Optional[int] = None
+    use_lora: bool = False
+    lora_rank: int = 16
+    lora_alpha: int = 32
+    lora_dropout: float = 0.05
+    lora_target_modules: str = "q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj"
 
     def post_init(self):
         if self.tokenizer_path is None:
