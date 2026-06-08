@@ -1,0 +1,469 @@
+2026-06-07 15:04:51,079	WARNING utils.py:594 -- Detecting docker specified CPUs. In previous versions of Ray, CPU detection in containers was incorrect. Please ensure that Ray has enough CPUs allocated. As a temporary workaround to revert to the prior behavior, set `RAY_USE_MULTIPROCESSING_CPU_COUNT=1` as an env var before starting Ray. Set the env var: `RAY_DISABLE_DOCKER_CPU_WARNING=1` to mute this warning.
+2026-06-07 15:04:52,243	INFO worker.py:1888 -- Started a local Ray instance.
+[36m(pid=4474)[0m W0607 15:05:04.768000 4474 site-packages/torch/utils/cpp_extension.py:140] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+[36m(main_task pid=4474)[0m {
+[36m(main_task pid=4474)[0m   "data": {
+[36m(main_task pid=4474)[0m     "train_files": "/root/fuxian/SegCompass/data/sht_video_10",
+[36m(main_task pid=4474)[0m     "val_files": "None",
+[36m(main_task pid=4474)[0m     "video_embed_dir": null,
+[36m(main_task pid=4474)[0m     "prompt_key": "text",
+[36m(main_task pid=4474)[0m     "max_prompt_length": 2048,
+[36m(main_task pid=4474)[0m     "max_response_length": 256,
+[36m(main_task pid=4474)[0m     "rollout_batch_size": 2,
+[36m(main_task pid=4474)[0m     "return_raw_input_ids": false,
+[36m(main_task pid=4474)[0m     "return_raw_prompt": false,
+[36m(main_task pid=4474)[0m     "system_prompt": "You are a helpful assistant.",
+[36m(main_task pid=4474)[0m     "shuffle": true,
+[36m(main_task pid=4474)[0m     "seed": 42,
+[36m(main_task pid=4474)[0m     "max_pixels": 705600,
+[36m(main_task pid=4474)[0m     "min_pixels": 3136
+[36m(main_task pid=4474)[0m   },
+[36m(main_task pid=4474)[0m   "worker": {
+[36m(main_task pid=4474)[0m     "llm_version": "qwen-2.5",
+[36m(main_task pid=4474)[0m     "hybrid_engine": false,
+[36m(main_task pid=4474)[0m     "supp_bf16": false,
+[36m(main_task pid=4474)[0m     "actor": {
+[36m(main_task pid=4474)[0m       "strategy": "fsdp",
+[36m(main_task pid=4474)[0m       "global_batch_size": 2,
+[36m(main_task pid=4474)[0m       "micro_batch_size_per_device_for_update": 1,
+[36m(main_task pid=4474)[0m       "micro_batch_size_per_device_for_experience": 1,
+[36m(main_task pid=4474)[0m       "max_grad_norm": 1.0,
+[36m(main_task pid=4474)[0m       "clip_ratio": 0.2,
+[36m(main_task pid=4474)[0m       "pg_loss_coef": 1.0,
+[36m(main_task pid=4474)[0m       "seg_loss_coef": 0.3,
+[36m(main_task pid=4474)[0m       "conf_loss_coef": 0.2,
+[36m(main_task pid=4474)[0m       "heatmap_dice_rate": 1.0,
+[36m(main_task pid=4474)[0m       "dice_loss_coef": 0.8,
+[36m(main_task pid=4474)[0m       "dice_loss_coef_new": 2.0,
+[36m(main_task pid=4474)[0m       "focal_loss_coef": 0.0,
+[36m(main_task pid=4474)[0m       "focal_loss_coef_new": 5.0,
+[36m(main_task pid=4474)[0m       "adjust_loss_step": 1500,
+[36m(main_task pid=4474)[0m       "kl_loss_coef": 0.2,
+[36m(main_task pid=4474)[0m       "entropy_coef": 0.0,
+[36m(main_task pid=4474)[0m       "use_kl_loss": true,
+[36m(main_task pid=4474)[0m       "kl_loss_type": "low_var_kl",
+[36m(main_task pid=4474)[0m       "padding_free": false,
+[36m(main_task pid=4474)[0m       "ulysses_sequence_parallel_size": 1,
+[36m(main_task pid=4474)[0m       "model": {
+[36m(main_task pid=4474)[0m         "model_path": "/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct",
+[36m(main_task pid=4474)[0m         "tokenizer_path": "/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct",
+[36m(main_task pid=4474)[0m         "override_config": {},
+[36m(main_task pid=4474)[0m         "enable_gradient_checkpointing": true,
+[36m(main_task pid=4474)[0m         "trust_remote_code": true,
+[36m(main_task pid=4474)[0m         "init_sae_ckpt": "/root/fuxian/SegCompass/sae_checkpoints/fake_qwen25vl_3b_L12_d2048_s128/ep_0.pt",
+[36m(main_task pid=4474)[0m         "k_slots": 1
+[36m(main_task pid=4474)[0m       },
+[36m(main_task pid=4474)[0m       "optim": {
+[36m(main_task pid=4474)[0m         "base_lr": 1.6e-06,
+[36m(main_task pid=4474)[0m         "lr_qb_rate": 30,
+[36m(main_task pid=4474)[0m         "lr_head_rate": 25,
+[36m(main_task pid=4474)[0m         "betas": [
+[36m(main_task pid=4474)[0m           0.9,
+[36m(main_task pid=4474)[0m           0.999
+[36m(main_task pid=4474)[0m         ],
+[36m(main_task pid=4474)[0m         "weight_decay": 0.01,
+[36m(main_task pid=4474)[0m         "lr_warmup_steps_ratio": 0.0,
+[36m(main_task pid=4474)[0m         "lr_final_div_factor": 6.7,
+[36m(main_task pid=4474)[0m         "min_lr_ratio": null,
+[36m(main_task pid=4474)[0m         "warmup_style": "constant",
+[36m(main_task pid=4474)[0m         "training_steps": -1
+[36m(main_task pid=4474)[0m       },
+[36m(main_task pid=4474)[0m       "fsdp": {
+[36m(main_task pid=4474)[0m         "enable_full_shard": true,
+[36m(main_task pid=4474)[0m         "param_offload": false,
+[36m(main_task pid=4474)[0m         "optimizer_offload": false,
+[36m(main_task pid=4474)[0m         "torch_dtype": null,
+[36m(main_task pid=4474)[0m         "mp_param_dtype": "bf16",
+[36m(main_task pid=4474)[0m         "mp_reduce_dtype": "fp32",
+[36m(main_task pid=4474)[0m         "mp_buffer_dtype": "fp32"
+[36m(main_task pid=4474)[0m       },
+[36m(main_task pid=4474)[0m       "offload": {
+[36m(main_task pid=4474)[0m         "param_offload": false,
+[36m(main_task pid=4474)[0m         "optimizer_offload": false
+[36m(main_task pid=4474)[0m       },
+[36m(main_task pid=4474)[0m       "global_batch_size_per_device": -1
+[36m(main_task pid=4474)[0m     },
+[36m(main_task pid=4474)[0m     "critic": {
+[36m(main_task pid=4474)[0m       "strategy": "fsdp",
+[36m(main_task pid=4474)[0m       "global_batch_size": 256,
+[36m(main_task pid=4474)[0m       "micro_batch_size_per_device_for_update": -1,
+[36m(main_task pid=4474)[0m       "micro_batch_size_per_device_for_experience": -1,
+[36m(main_task pid=4474)[0m       "max_grad_norm": 1.0,
+[36m(main_task pid=4474)[0m       "cliprange_value": 0.5,
+[36m(main_task pid=4474)[0m       "padding_free": false,
+[36m(main_task pid=4474)[0m       "ulysses_sequence_parallel_size": 1,
+[36m(main_task pid=4474)[0m       "model": {
+[36m(main_task pid=4474)[0m         "model_path": null,
+[36m(main_task pid=4474)[0m         "tokenizer_path": null,
+[36m(main_task pid=4474)[0m         "override_config": {},
+[36m(main_task pid=4474)[0m         "enable_gradient_checkpointing": true,
+[36m(main_task pid=4474)[0m         "trust_remote_code": true,
+[36m(main_task pid=4474)[0m         "init_sae_ckpt": "pretrained_models/sae",
+[36m(main_task pid=4474)[0m         "k_slots": null
+[36m(main_task pid=4474)[0m       },
+[36m(main_task pid=4474)[0m       "optim": {
+[36m(main_task pid=4474)[0m         "base_lr": 1e-06,
+[36m(main_task pid=4474)[0m         "lr_qb_rate": 150,
+[36m(main_task pid=4474)[0m         "lr_head_rate": 80,
+[36m(main_task pid=4474)[0m         "betas": [
+[36m(main_task pid=4474)[0m           0.9,
+[36m(main_task pid=4474)[0m           0.999
+[36m(main_task pid=4474)[0m         ],
+[36m(main_task pid=4474)[0m         "weight_decay": 0.01,
+[36m(main_task pid=4474)[0m         "lr_warmup_steps_ratio": 0.0,
+[36m(main_task pid=4474)[0m         "lr_final_div_factor": 6.7,
+[36m(main_task pid=4474)[0m         "min_lr_ratio": null,
+[36m(main_task pid=4474)[0m         "warmup_style": "constant",
+[36m(main_task pid=4474)[0m         "training_steps": -1
+[36m(main_task pid=4474)[0m       },
+[36m(main_task pid=4474)[0m       "fsdp": {
+[36m(main_task pid=4474)[0m         "enable_full_shard": true,
+[36m(main_task pid=4474)[0m         "param_offload": false,
+[36m(main_task pid=4474)[0m         "optimizer_offload": false,
+[36m(main_task pid=4474)[0m         "torch_dtype": null,
+[36m(main_task pid=4474)[0m         "mp_param_dtype": "bf16",
+[36m(main_task pid=4474)[0m         "mp_reduce_dtype": "fp32",
+[36m(main_task pid=4474)[0m         "mp_buffer_dtype": "fp32"
+[36m(main_task pid=4474)[0m       },
+[36m(main_task pid=4474)[0m       "offload": {
+[36m(main_task pid=4474)[0m         "param_offload": false,
+[36m(main_task pid=4474)[0m         "optimizer_offload": true
+[36m(main_task pid=4474)[0m       },
+[36m(main_task pid=4474)[0m       "global_batch_size_per_device": -1
+[36m(main_task pid=4474)[0m     },
+[36m(main_task pid=4474)[0m     "ref": {
+[36m(main_task pid=4474)[0m       "strategy": "fsdp",
+[36m(main_task pid=4474)[0m       "offload": {
+[36m(main_task pid=4474)[0m         "param_offload": false,
+[36m(main_task pid=4474)[0m         "optimizer_offload": true
+[36m(main_task pid=4474)[0m       },
+[36m(main_task pid=4474)[0m       "micro_batch_size_per_device_for_experience": 1,
+[36m(main_task pid=4474)[0m       "padding_free": false
+[36m(main_task pid=4474)[0m     },
+[36m(main_task pid=4474)[0m     "reward": {
+[36m(main_task pid=4474)[0m       "reward_type": "function",
+[36m(main_task pid=4474)[0m       "compute_score": "scots"
+[36m(main_task pid=4474)[0m     },
+[36m(main_task pid=4474)[0m     "rollout": {
+[36m(main_task pid=4474)[0m       "name": "vllm",
+[36m(main_task pid=4474)[0m       "temperature": 1.0,
+[36m(main_task pid=4474)[0m       "top_k": -1,
+[36m(main_task pid=4474)[0m       "top_p": 1.0,
+[36m(main_task pid=4474)[0m       "dtype": "float16",
+[36m(main_task pid=4474)[0m       "gpu_memory_utilization": 0.3,
+[36m(main_task pid=4474)[0m       "ignore_eos": false,
+[36m(main_task pid=4474)[0m       "enforce_eager": true,
+[36m(main_task pid=4474)[0m       "free_cache_engine": false,
+[36m(main_task pid=4474)[0m       "enable_chunked_prefill": false,
+[36m(main_task pid=4474)[0m       "tensor_parallel_size": 2,
+[36m(main_task pid=4474)[0m       "max_num_batched_tokens": 17408,
+[36m(main_task pid=4474)[0m       "max_num_seqs": 4,
+[36m(main_task pid=4474)[0m       "disable_log_stats": true,
+[36m(main_task pid=4474)[0m       "do_sample": true,
+[36m(main_task pid=4474)[0m       "n": 1,
+[36m(main_task pid=4474)[0m       "limit_images": 0,
+[36m(main_task pid=4474)[0m       "limit_videos": 1,
+[36m(main_task pid=4474)[0m       "prompt_length": 2048,
+[36m(main_task pid=4474)[0m       "response_length": 256,
+[36m(main_task pid=4474)[0m       "use_raw_prompt": false
+[36m(main_task pid=4474)[0m     },
+[36m(main_task pid=4474)[0m     "sae": {
+[36m(main_task pid=4474)[0m       "architecture": "standard",
+[36m(main_task pid=4474)[0m       "d_in": 2048,
+[36m(main_task pid=4474)[0m       "d_sae": 128,
+[36m(main_task pid=4474)[0m       "activation_fn_str": "relu",
+[36m(main_task pid=4474)[0m       "apply_b_dec_to_input": false,
+[36m(main_task pid=4474)[0m       "finetuning_scaling_factor": false,
+[36m(main_task pid=4474)[0m       "context_size": 4096,
+[36m(main_task pid=4474)[0m       "model_name": "llava-1.5-7b",
+[36m(main_task pid=4474)[0m       "hook_name": "blocks.16.hook_resid_post",
+[36m(main_task pid=4474)[0m       "hook_layer": 13,
+[36m(main_task pid=4474)[0m       "hook_head_index": null,
+[36m(main_task pid=4474)[0m       "prepend_bos": false,
+[36m(main_task pid=4474)[0m       "dataset_path": null,
+[36m(main_task pid=4474)[0m       "dataset_trust_remote_code": false,
+[36m(main_task pid=4474)[0m       "normalize_activations": "none",
+[36m(main_task pid=4474)[0m       "dtype": "bfloat16",
+[36m(main_task pid=4474)[0m       "device": "cpu",
+[36m(main_task pid=4474)[0m       "sae_lens_training_version": null,
+[36m(main_task pid=4474)[0m       "activation_fn_kwargs": {},
+[36m(main_task pid=4474)[0m       "neuronpedia_id": null,
+[36m(main_task pid=4474)[0m       "model_from_pretrained_kwargs": {}
+[36m(main_task pid=4474)[0m     }
+[36m(main_task pid=4474)[0m   },
+[36m(main_task pid=4474)[0m   "algorithm": {
+[36m(main_task pid=4474)[0m     "gamma": 1.0,
+[36m(main_task pid=4474)[0m     "lam": 1.0,
+[36m(main_task pid=4474)[0m     "adv_estimator": "grpo",
+[36m(main_task pid=4474)[0m     "kl_penalty": "kl",
+[36m(main_task pid=4474)[0m     "kl_type": "fixed",
+[36m(main_task pid=4474)[0m     "kl_coef": 0.0,
+[36m(main_task pid=4474)[0m     "kl_horizon": 0.0,
+[36m(main_task pid=4474)[0m     "kl_target": 0.0
+[36m(main_task pid=4474)[0m   },
+[36m(main_task pid=4474)[0m   "trainer": {
+[36m(main_task pid=4474)[0m     "total_episodes": 1,
+[36m(main_task pid=4474)[0m     "max_steps": null,
+[36m(main_task pid=4474)[0m     "project_name": "easy_r1",
+[36m(main_task pid=4474)[0m     "experiment_name": "demo",
+[36m(main_task pid=4474)[0m     "logger": [
+[36m(main_task pid=4474)[0m       "console"
+[36m(main_task pid=4474)[0m     ],
+[36m(main_task pid=4474)[0m     "val_generations_to_log_to_wandb": 0,
+[36m(main_task pid=4474)[0m     "nnodes": 1,
+[36m(main_task pid=4474)[0m     "n_gpus_per_node": 2,
+[36m(main_task pid=4474)[0m     "save_freq": -1,
+[36m(main_task pid=4474)[0m     "load_checkpoint_path": null,
+[36m(main_task pid=4474)[0m     "val_before_train": false,
+[36m(main_task pid=4474)[0m     "val_only": false,
+[36m(main_task pid=4474)[0m     "test_freq": 10000,
+[36m(main_task pid=4474)[0m     "critic_warmup": 0,
+[36m(main_task pid=4474)[0m     "remove_previous_ckpt": false,
+[36m(main_task pid=4474)[0m     "load_init_llm_hf": false,
+[36m(main_task pid=4474)[0m     "save_checkpoint_path": "/root/fuxian/SegCompass/checkpoints/qwen_vad_3b_n2_from_gref/current_machine_20260607_150433",
+[36m(main_task pid=4474)[0m     "save_llm_hf_freq": null,
+[36m(main_task pid=4474)[0m     "eval_checkpoints_dir": null,
+[36m(main_task pid=4474)[0m     "eval_step_start": -1,
+[36m(main_task pid=4474)[0m     "eval_step_end": -1
+[36m(main_task pid=4474)[0m   }
+[36m(main_task pid=4474)[0m }
+[36m(main_task pid=4474)[0m Size of train dataloader: 5
+[36m(main_task pid=4474)[0m Total training steps: 5
+[36m(WorkerDict pid=4774)[0m /root/miniconda3/envs/mllm/lib/python3.10/contextlib.py:103: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+[36m(WorkerDict pid=4774)[0m   self.gen = func(*args, **kwds)
+[36m(WorkerDict pid=4774)[0m Loading weights:   0%|          | 0/824 [00:00<?, ?it/s]
+[36m(WorkerDict pid=4969)[0m [rank1]:[W607 15:05:38.128475410 ProcessGroupNCCL.cpp:5188] Guessing device ID based on global rank. This can cause a hang if rank to GPU mapping is heterogeneous. You can specify device_id in init_process_group()
+[36m(WorkerDict pid=4774)[0m Loading weights:   0%|          | 1/824 [00:00<10:52,  1.26it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  16%|█▋        | 135/824 [00:00<00:03, 203.19it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  25%|██▌       | 209/824 [00:01<00:03, 196.83it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  31%|███▏      | 258/824 [00:01<00:02, 198.09it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  36%|███▌      | 296/824 [00:01<00:02, 197.84it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  40%|███▉      | 327/824 [00:01<00:02, 199.00it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  43%|████▎     | 355/824 [00:02<00:02, 199.40it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  46%|████▌     | 380/824 [00:02<00:02, 198.00it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  49%|████▉     | 404/824 [00:02<00:02, 198.69it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  52%|█████▏    | 427/824 [00:02<00:02, 187.37it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  60%|██████    | 498/824 [00:02<00:01, 298.65it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  68%|██████▊   | 560/824 [00:02<00:00, 368.48it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  75%|███████▌  | 618/824 [00:02<00:00, 418.40it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  82%|████████▏ | 678/824 [00:02<00:00, 465.30it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  90%|████████▉ | 738/824 [00:02<00:00, 495.89it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  97%|█████████▋| 798/824 [00:03<00:00, 524.51it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights: 100%|██████████| 824/824 [00:03<00:00, 262.56it/s]
+[36m(WorkerDict pid=4774)[0m NCCL version 2.28.9+cuda13.0
+[36m(WorkerDict pid=4774)[0m /root/miniconda3/envs/mllm/lib/python3.10/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+[36m(WorkerDict pid=4774)[0m   return func(*args, **kwargs)
+[36m(WorkerDict pid=4774)[0m Qwen2_5_VLForConditionalGeneration contains 3.75B parameters
+[36m(WorkerDict pid=4774)[0m After init from huggingface model, memory allocated (GB): 4.76837158203125e-07, memory reserved (GB): 0.001953125.
+[36m(WorkerDict pid=4774)[0m FSDP wrap policy: functools.partial(<function transformer_auto_wrap_policy at 0x7ef91e9237f0>, transformer_layer_cls={<class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLVisionBlock'>, <class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLDecoderLayer'>}).
+[36m(WorkerDict pid=4969)[0m /root/fuxian/SegCompass/verl/modeling.py:415: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+[36m(WorkerDict pid=4969)[0m   self.encoder = nn.TransformerEncoder(enc_layer, num_layers=num_layers)
+[36m(WorkerDict pid=4969)[0m /root/miniconda3/envs/mllm/lib/python3.10/contextlib.py:103: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+[36m(WorkerDict pid=4969)[0m   self.gen = func(*args, **kwds)
+[36m(WorkerDict pid=4774)[0m [rank0]:[W607 15:05:42.640573018 ProcessGroupNCCL.cpp:5188] Guessing device ID based on global rank. This can cause a hang if rank to GPU mapping is heterogeneous. You can specify device_id in init_process_group()
+[36m(WorkerDict pid=4774)[0m After Actor FSDP init, memory allocated (GB): 3.5149097442626953, memory reserved (GB): 5.158203125.
+[36m(WorkerDict pid=4969)[0m /root/fuxian/SegCompass/verl/workers/fsdp_workers.py:282: FutureWarning: The `NO_SHARD` sharding strategy is deprecated. If having issues, please use `DistributedDataParallel` instead.
+[36m(WorkerDict pid=4969)[0m   self.fsdp_module = FSDP(
+[36m(WorkerDict pid=4774)[0m After actor optimizer init, memory allocated (GB): 3.564899444580078, memory reserved (GB): 5.158203125.
+[36m(WorkerDict pid=4774)[0m Loading weights:   0%|          | 0/824 [00:00<?, ?it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:   0%|          | 1/824 [00:00<02:51,  4.79it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:   8%|▊         | 64/824 [00:00<00:02, 258.16it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  12%|█▏        | 101/824 [00:00<00:02, 261.71it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  16%|█▋        | 135/824 [00:00<00:02, 268.38it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  20%|██        | 166/824 [00:00<00:02, 279.49it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  24%|██▍       | 197/824 [00:00<00:02, 269.50it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  27%|██▋       | 226/824 [00:00<00:02, 261.03it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  31%|███       | 255/824 [00:01<00:02, 258.18it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  34%|███▍      | 282/824 [00:01<00:02, 247.49it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  38%|███▊      | 315/824 [00:01<00:02, 247.36it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  41%|████▏     | 341/824 [00:01<00:01, 245.30it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  46%|████▌     | 375/824 [00:01<00:01, 251.29it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  49%|████▊     | 401/824 [00:01<00:01, 222.59it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  59%|█████▉    | 486/824 [00:01<00:00, 372.23it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  72%|███████▏  | 594/824 [00:01<00:00, 554.81it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  84%|████████▎ | 690/824 [00:01<00:00, 657.02it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  95%|█████████▍| 780/824 [00:02<00:00, 718.79it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights: 100%|██████████| 824/824 [00:02<00:00, 377.14it/s]
+[36m(WorkerDict pid=4774)[0m Qwen2_5_VLForConditionalGeneration contains 3.75B parameters
+[36m(WorkerDict pid=4774)[0m After init from huggingface model, memory allocated (GB): 3.564899444580078, memory reserved (GB): 3.69921875.
+[36m(WorkerDict pid=4774)[0m FSDP wrap policy: functools.partial(<function transformer_auto_wrap_policy at 0x7ef91e9237f0>, transformer_layer_cls={<class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLVisionBlock'>, <class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLDecoderLayer'>}).
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:05:52 [utils.py:240] non-default args: {'dtype': torch.float16, 'max_model_len': 2304, 'distributed_executor_backend': 'external_launcher', 'tensor_parallel_size': 2, 'gpu_memory_utilization': 0.3, 'max_num_batched_tokens': 17408, 'max_num_seqs': 4, 'disable_log_stats': True, 'enforce_eager': True, 'disable_custom_all_reduce': True, 'limit_mm_per_prompt': {'image': 0, 'video': 1}, 'enable_chunked_prefill': False, 'enable_sleep_mode': True, 'model': '/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct'}
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:05:52 [envs.py:1866] Unknown vLLM environment variable detected: VLLM_ATTENTION_BACKEND
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:05:52 [envs.py:1866] Unknown vLLM environment variable detected: VLLM_USE_TRITON
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:05:52 [model.py:568] Resolved architecture: Qwen2_5_VLForConditionalGeneration
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:05:52 [model.py:2035] Casting torch.bfloat16 to torch.float16.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:05:52 [model.py:1697] Using max model len 2304
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:05:52 [arg_utils.py:2318] This model does not officially support disabling chunked prefill. Disabling this manually may cause the engine to crash or produce incorrect outputs.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:05:52 [arg_utils.py:1739] Using ray runtime env (env vars redacted): {'env_vars': {'MASTER_ADDR': '***', 'MASTER_PORT': '***', 'NCCL_DEBUG': '***', 'RANK': '***', 'RAY_LOCAL_RANK': '***', 'RAY_LOCAL_WORLD_SIZE': '***', 'TOKENIZERS_PARALLELISM': '***', 'WG_BACKEND': '***', 'WG_PREFIX': '***', 'WORLD_SIZE': '***'}}
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:05:52 [parallel.py:769] Using external launcher for distributed inference.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:05:52 [parallel.py:829] Disabling V1 multiprocessing for external launcher.
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:05:52 [scheduler.py:281] max_num_batched_tokens (17408) exceeds max_num_seqs * max_model_len (9216). This may lead to unexpected behavior.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:05:52 [vllm.py:886] Asynchronous scheduling is enabled.
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:05:52 [vllm.py:942] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:05:52 [vllm.py:960] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:05:52 [kernel.py:212] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:05:52 [vllm.py:1135] Cudagraph is disabled under eager mode
+[36m(WorkerDict pid=4774)[0m Before building vllm rollout, memory allocated (GB): 7.0788445472717285, memory reserved (GB): 8.697265625.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:05:52 [arg_utils.py:1739] Using ray runtime env (env vars redacted): {'env_vars': {'NCCL_DEBUG': '***', 'RANK': '***', 'RAY_LOCAL_RANK': '***', 'RAY_LOCAL_WORLD_SIZE': '***', 'TOKENIZERS_PARALLELISM': '***', 'WG_BACKEND': '***', 'WG_PREFIX': '***', 'WORLD_SIZE': '***'}}
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:05:52 [compilation.py:303] Enabled custom fusions: norm_quant, act_quant
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:05:59 [core.py:109] Initializing a V1 LLM engine (v0.21.0) with config: model='/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct', speculative_config=None, tokenizer='/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.float16, max_seq_len=2304, download_dir=None, load_format=auto, tensor_parallel_size=2, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=True, quantization=None, quantization_config=None, enforce_eager=True, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False), seed=0, served_model_name=/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct, enable_prefix_caching=True, enable_chunked_prefill=False, pooler_config=None, compilation_config={'mode': <CompilationMode.NONE: 0>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['all'], 'ir_enable_torch_wrap': False, 'splitting_ops': [], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [17408], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'size_asserts': False, 'alignment_asserts': False, 'scalar_asserts': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.NONE: 0>, 'cudagraph_num_of_warmups': 0, 'cudagraph_capture_sizes': [], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': True, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'fuse_act_padding': False}, 'max_cudagraph_capture_size': 0, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native']), enable_flashinfer_autotune=False, moe_backend='auto')
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:05:52 [utils.py:240] non-default args: {'dtype': torch.float16, 'max_model_len': 2304, 'distributed_executor_backend': 'external_launcher', 'tensor_parallel_size': 2, 'gpu_memory_utilization': 0.3, 'max_num_batched_tokens': 17408, 'max_num_seqs': 4, 'disable_log_stats': True, 'enforce_eager': True, 'disable_custom_all_reduce': True, 'limit_mm_per_prompt': {'image': 0, 'video': 1}, 'enable_chunked_prefill': False, 'enable_sleep_mode': True, 'model': '/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct'}
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:05:52 [envs.py:1866] Unknown vLLM environment variable detected: VLLM_ATTENTION_BACKEND
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:05:52 [envs.py:1866] Unknown vLLM environment variable detected: VLLM_USE_TRITON
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:05:52 [model.py:568] Resolved architecture: Qwen2_5_VLForConditionalGeneration
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:05:52 [model.py:2035] Casting torch.bfloat16 to torch.float16.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:05:52 [model.py:1697] Using max model len 2304
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:05:52 [arg_utils.py:2318] This model does not officially support disabling chunked prefill. Disabling this manually may cause the engine to crash or produce incorrect outputs.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:05:52 [parallel.py:769] Using external launcher for distributed inference.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:05:52 [parallel.py:829] Disabling V1 multiprocessing for external launcher.
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:05:52 [scheduler.py:281] max_num_batched_tokens (17408) exceeds max_num_seqs * max_model_len (9216). This may lead to unexpected behavior.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:05:52 [vllm.py:886] Asynchronous scheduling is enabled.
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:05:52 [vllm.py:942] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:05:52 [vllm.py:960] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:05:52 [kernel.py:212] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:05:52 [vllm.py:1135] Cudagraph is disabled under eager mode
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:00 [pynccl.py:111] vLLM is using nccl==2.28.9
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:06:01 [symm_mem.py:66] SymmMemCommunicator: Device capability 8.9 not supported, communicator is not available.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:01 [parallel_state.py:1723] rank 0 in world size 2 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, EP rank N/A, EPLB rank N/A
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:01 [topk_topp_sampler.py:45] Using FlashInfer for top-p & top-k sampling.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:01 [gpu_model_runner.py:4857] Starting to load model /root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct...
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:02 [cuda.py:427] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:02 [mm_encoder_attention.py:372] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:06:02 [vllm.py:942] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:06:02 [vllm.py:960] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:02 [kernel.py:212] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:02 [vllm.py:1135] Cudagraph is disabled under eager mode
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:02 [cuda.py:372] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:02 [flash_attn.py:641] Using FlashAttention version 2
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:02 [weight_utils.py:938] Filesystem type for checkpoints: XFS. Checkpoint size: 6.99 GiB. Available RAM: 385.03 GiB.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:02 [weight_utils.py:961] Auto-prefetch is disabled because the filesystem (XFS) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+[36m(WorkerDict pid=4774)[0m Loading safetensors checkpoint shards:   0% Completed | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=4774)[0m /root/fuxian/SegCompass/verl/modeling.py:415: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+[36m(WorkerDict pid=4774)[0m   self.encoder = nn.TransformerEncoder(enc_layer, num_layers=num_layers)
+[36m(WorkerDict pid=4774)[0m /root/fuxian/SegCompass/verl/workers/fsdp_workers.py:282: FutureWarning: The `NO_SHARD` sharding strategy is deprecated. If having issues, please use `DistributedDataParallel` instead.
+[36m(WorkerDict pid=4774)[0m   self.fsdp_module = FSDP(
+[36m(WorkerDict pid=4774)[0m Loading safetensors checkpoint shards:  50% Completed | 1/2 [00:01<00:01,  1.66s/it]
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:05 [default_loader.py:397] Loading weights took 2.68 seconds
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:00 [core.py:109] Initializing a V1 LLM engine (v0.21.0) with config: model='/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct', speculative_config=None, tokenizer='/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.float16, max_seq_len=2304, download_dir=None, load_format=auto, tensor_parallel_size=2, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=True, quantization=None, quantization_config=None, enforce_eager=True, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False), seed=0, served_model_name=/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct, enable_prefix_caching=True, enable_chunked_prefill=False, pooler_config=None, compilation_config={'mode': <CompilationMode.NONE: 0>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['all'], 'ir_enable_torch_wrap': False, 'splitting_ops': [], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [17408], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'size_asserts': False, 'alignment_asserts': False, 'scalar_asserts': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.NONE: 0>, 'cudagraph_num_of_warmups': 0, 'cudagraph_capture_sizes': [], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': True, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'fuse_act_padding': False}, 'max_cudagraph_capture_size': 0, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native']), enable_flashinfer_autotune=False, moe_backend='auto')
+[36m(WorkerDict pid=4774)[0m Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:02<00:00,  1.30s/it]
+[36m(WorkerDict pid=4774)[0m Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:02<00:00,  1.36s/it]
+[36m(WorkerDict pid=4774)[0m 
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:05 [gpu_model_runner.py:4959] Model loading took 3.68 GiB memory and 3.185840 seconds
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:06:01 [symm_mem.py:66] SymmMemCommunicator: Device capability 8.9 not supported, communicator is not available.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:01 [parallel_state.py:1723] rank 1 in world size 2 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 1, EP rank N/A, EPLB rank N/A
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:06 [gpu_model_runner.py:5920] Encoder cache will be initialized with a budget of 17408 tokens, and profiled with 1 video items of the maximum feature size.
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:06:07 [op.py:290] Priority not set for op rms_norm, using native implementation.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:02 [cuda.py:427] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:02 [mm_encoder_attention.py:372] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:06:02 [vllm.py:942] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:06:02 [vllm.py:960] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:02 [kernel.py:212] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:02 [vllm.py:1135] Cudagraph is disabled under eager mode
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:02 [cuda.py:372] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:02 [flash_attn.py:641] Using FlashAttention version 2
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:02 [weight_utils.py:938] Filesystem type for checkpoints: XFS. Checkpoint size: 6.99 GiB. Available RAM: 384.88 GiB.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:02 [weight_utils.py:961] Auto-prefetch is disabled because the filesystem (XFS) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:06:08 [op.py:290] Priority not set for op fused_add_rms_norm, using native implementation.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:13 [gpu_worker.py:462] Available KV cache memory: 4.48 GiB
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:05 [default_loader.py:397] Loading weights took 2.77 seconds
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:06 [gpu_model_runner.py:4959] Model loading took 3.68 GiB memory and 3.247975 seconds
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:06 [gpu_model_runner.py:5920] Encoder cache will be initialized with a budget of 17408 tokens, and profiled with 1 video items of the maximum feature size.
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:06:07 [op.py:290] Priority not set for op rms_norm, using native implementation.
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:06:08 [op.py:290] Priority not set for op fused_add_rms_norm, using native implementation.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:14 [kv_cache_utils.py:1710] GPU KV cache size: 261,136 tokens
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:14 [kv_cache_utils.py:1711] Maximum concurrency for 2,304 tokens per request: 113.34x
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:14 [kernel_warmup.py:44] Skipping FlashInfer autotune because it is disabled.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:14 [jit_monitor.py:54] Kernel JIT monitor activated — Triton JIT compilations during inference will be logged as warnings.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:14 [core.py:306] init engine (profile, create kv cache, warmup model) took 7.96 s
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:14 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:18 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:18 [gpu_worker.py:178] Sleep mode freed 8.27 GiB memory, 7.81 GiB memory is still in use.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:18 [abstract.py:331] It took 4.046665 seconds to fall asleep.
+[36m(WorkerDict pid=4774)[0m Sampling params: {'max_tokens': 256, 'detokenize': False, 'temperature': 1.0, 'top_k': -1, 'top_p': 1.0, 'ignore_eos': False, 'n': 1}.
+[36m(WorkerDict pid=4774)[0m After building vllm rollout, memory allocated (GB): 15.344790935516357, memory reserved (GB): 16.08984375.
+[36m(WorkerDict pid=4774)[0m After building sharding manager, memory allocated (GB): 15.344790935516357, memory reserved (GB): 16.08984375.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:14 [gpu_worker.py:462] Available KV cache memory: 4.48 GiB
+[36m(WorkerDict pid=4774)[0m /root/fuxian/SegCompass/verl/workers/sharding_manager/fsdp_vllm.py:47: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=4774)[0m   FSDP.set_state_dict_type(
+[36m(WorkerDict pid=4969)[0m /root/miniconda3/envs/mllm/lib/python3.10/contextlib.py:103: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+[36m(WorkerDict pid=4969)[0m   self.gen = func(*args, **kwds)
+[36m(WorkerDict pid=4774)[0m Loading weights:   0%|          | 0/824 [00:00<?, ?it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:   0%|          | 1/824 [00:00<07:02,  1.95it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  17%|█▋        | 136/824 [00:00<00:02, 280.29it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  24%|██▍       | 200/824 [00:00<00:02, 277.11it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  30%|███       | 248/824 [00:01<00:02, 274.70it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  35%|███▍      | 288/824 [00:01<00:01, 277.58it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  39%|███▉      | 324/824 [00:01<00:01, 275.05it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  43%|████▎     | 357/824 [00:01<00:01, 265.19it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  47%|████▋     | 387/824 [00:01<00:01, 260.37it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  50%|█████     | 416/824 [00:01<00:01, 261.57it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  59%|█████▉    | 486/824 [00:01<00:00, 365.35it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  69%|██████▉   | 570/824 [00:01<00:00, 486.46it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  80%|████████  | 660/824 [00:02<00:00, 593.70it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights:  92%|█████████▏| 754/824 [00:02<00:00, 687.29it/s]
+[36m(WorkerDict pid=4774)[0m Loading weights: 100%|██████████| 824/824 [00:02<00:00, 368.65it/s]
+[36m(WorkerDict pid=4774)[0m Qwen2_5_VLForConditionalGeneration contains 3.75B parameters
+[36m(WorkerDict pid=4774)[0m After init from huggingface model, memory allocated (GB): 15.344791412353516, memory reserved (GB): 16.08984375.
+[36m(WorkerDict pid=4774)[0m FSDP wrap policy: functools.partial(<function transformer_auto_wrap_policy at 0x7ef91e9237f0>, transformer_layer_cls={<class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLVisionBlock'>, <class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLDecoderLayer'>}).
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:14 [kv_cache_utils.py:1710] GPU KV cache size: 261,136 tokens
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:14 [kv_cache_utils.py:1711] Maximum concurrency for 2,304 tokens per request: 113.34x
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:14 [kernel_warmup.py:44] Skipping FlashInfer autotune because it is disabled.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:14 [jit_monitor.py:54] Kernel JIT monitor activated — Triton JIT compilations during inference will be logged as warnings.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:14 [core.py:306] init engine (profile, create kv cache, warmup model) took 8.25 s
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:14 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=4774)[0m /root/miniconda3/envs/mllm/lib/python3.10/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+[36m(WorkerDict pid=4774)[0m   return func(*args, **kwargs)
+[36m(WorkerDict pid=4969)[0m /root/fuxian/SegCompass/verl/modeling.py:415: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+[36m(WorkerDict pid=4969)[0m   self.encoder = nn.TransformerEncoder(enc_layer, num_layers=num_layers)
+[36m(WorkerDict pid=4969)[0m /root/fuxian/SegCompass/verl/workers/sharding_manager/fsdp_vllm.py:47: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=4969)[0m   FSDP.set_state_dict_type(
+[36m(WorkerDict pid=4774)[0m /root/miniconda3/envs/mllm/lib/python3.10/contextlib.py:103: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+[36m(WorkerDict pid=4774)[0m   self.gen = func(*args, **kwds)
+[36m(WorkerDict pid=4969)[0m /root/fuxian/SegCompass/verl/workers/fsdp_workers.py:282: FutureWarning: The `NO_SHARD` sharding strategy is deprecated. If having issues, please use `DistributedDataParallel` instead.
+[36m(WorkerDict pid=4969)[0m   self.fsdp_module = FSDP(
+[36m(WorkerDict pid=4774)[0m After Actor FSDP init, memory allocated (GB): 18.859700679779053, memory reserved (GB): 21.2265625.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:18 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:18 [gpu_worker.py:178] Sleep mode freed 8.27 GiB memory, 8.06 GiB memory is still in use.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:18 [abstract.py:331] It took 3.993721 seconds to fall asleep.
+[36m(WorkerDict pid=4969)[0m Sampling params: {'max_tokens': 256, 'detokenize': False, 'temperature': 1.0, 'top_k': -1, 'top_p': 1.0, 'ignore_eos': False, 'n': 1}.
+[36m(WorkerDict pid=4774)[0m After actor optimizer init, memory allocated (GB): 18.909690380096436, memory reserved (GB): 21.2265625.
+[36m(main_task pid=4474)[0m qwen-vl-utils using decord to read video.
+[36m(main_task pid=4474)[0m qwen-vl-utils using decord to read video.
+[36m(main_task pid=4474)[0m qwen-vl-utils using decord to read video.
+[36m(main_task pid=4474)[0m qwen-vl-utils using decord to read video.qwen-vl-utils using decord to read video.
+[36m(main_task pid=4474)[0m 
+[36m(WorkerDict pid=4774)[0m Before state_dict() in sharding manager, memory allocated (GB): 18.909690380096436, memory reserved (GB): 19.787109375.
+[36m(WorkerDict pid=4774)[0m After state_dict() in sharding manager, memory allocated (GB): 22.743711948394775, memory reserved (GB): 24.9921875.
+[36m(WorkerDict pid=4774)[0m INFO 06-07 15:06:29 [abstract.py:349] It took 0.446106 seconds to wake up tags {'weights', 'kv_cache'}.
+[36m(WorkerDict pid=4969)[0m INFO 06-07 15:06:29 [abstract.py:349] It took 0.442068 seconds to wake up tags {'kv_cache', 'weights'}.
+[36m(WorkerDict pid=4774)[0m After sync model weights in sharding manager, memory allocated (GB): 22.743711948394775, memory reserved (GB): 24.9921875.
+[36m(WorkerDict pid=4774)[0m After del state_dict and empty_cache in sharding manager, memory allocated (GB): 18.909690380096436, memory reserved (GB): 19.787109375.
+[36m(WorkerDict pid=4774)[0m After entering rollout sharding manager, memory allocated (GB): 18.909690380096436, memory reserved (GB): 19.787109375.
+[36m(WorkerDict pid=4969)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=4969)[0m Rendering prompts:  50%|█████     | 1/2 [00:14<00:14, 14.60s/it]
+[36m(WorkerDict pid=4774)[0m /root/fuxian/SegCompass/verl/modeling.py:415: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+[36m(WorkerDict pid=4774)[0m   self.encoder = nn.TransformerEncoder(enc_layer, num_layers=num_layers)
+[36m(WorkerDict pid=4774)[0m /root/fuxian/SegCompass/verl/workers/fsdp_workers.py:282: FutureWarning: The `NO_SHARD` sharding strategy is deprecated. If having issues, please use `DistributedDataParallel` instead.
+[36m(WorkerDict pid=4774)[0m   self.fsdp_module = FSDP(
+[36m(WorkerDict pid=4774)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=4969)[0m Rendering prompts: 100%|██████████| 2/2 [00:14<00:00,  7.34s/it]
+[36m(WorkerDict pid=4969)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:06:44 [jit_monitor.py:103] Triton kernel JIT compilation during inference: _compute_slot_mapping_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:06:44 [jit_monitor.py:103] Triton kernel JIT compilation during inference: rotary_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(WorkerDict pid=4969)[0m Processed prompts:  50%|█████     | 1/2 [00:02<00:02,  2.43s/it, est. speed input: 684.77 toks/s, output: 7.80 toks/s]
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:06:47 [jit_monitor.py:103] Triton kernel JIT compilation during inference: _triton_mrope_forward. This causes a latency spike; consider extending warmup to cover this shape/config.
+*** SIGTERM received at time=1780816009 on cpu 70 ***
+PC: @     0x7fc46793e117  (unknown)  (unknown)
+    @     0x7fc4678ef520  (unknown)  (unknown)
+    @ ... and at least 1 more frames
+[2026-06-07 15:06:49,412 E 1963 1963] logging.cc:496: *** SIGTERM received at time=1780816009 on cpu 70 ***
+[2026-06-07 15:06:49,412 E 1963 1963] logging.cc:496: PC: @     0x7fc46793e117  (unknown)  (unknown)
+[2026-06-07 15:06:49,413 E 1963 1963] logging.cc:496:     @     0x7fc4678ef520  (unknown)  (unknown)
+[2026-06-07 15:06:49,413 E 1963 1963] logging.cc:496:     @ ... and at least 1 more frames
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:06:44 [jit_monitor.py:103] Triton kernel JIT compilation during inference: _compute_slot_mapping_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(WorkerDict pid=4969)[0m WARNING 06-07 15:06:44 [jit_monitor.py:103] Triton kernel JIT compilation during inference: rotary_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(WorkerDict pid=4774)[0m WARNING 06-07 15:06:47 [jit_monitor.py:103] Triton kernel JIT compilation during inference: _triton_mrope_forward. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(WorkerDict pid=4774)[0m Rendering prompts:  50%|█████     | 1/2 [00:14<00:14, 14.64s/it]
+[36m(WorkerDict pid=4774)[0m Rendering prompts: 100%|██████████| 2/2 [00:14<00:00,  7.35s/it]
+[36m(WorkerDict pid=4774)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=4774)[0m Processed prompts:  50%|█████     | 1/2 [00:02<00:02,  2.38s/it, est. speed input: 701.28 toks/s, output: 7.99 toks/s]

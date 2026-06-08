@@ -11,15 +11,28 @@ if [ "$SUPP_BF16" = "true" ]; then export VLLM_ATTENTION_BACKEND=FLASH_ATTN; DTY
 else export VLLM_ATTENTION_BACKEND=SDPA; export VLLM_USE_TRITON=0; export XFORMERS_FORCE_DISABLE_TRITON=1; DTYPE=float16; fi
 
 ######## function tools ########
-ROOT_DIR="${ROOT_DIR:-/root/fuxian/SegCompass}"
 RUN_FLAG="${RUN_FLAG:-default}"
 RUN_NAME="${RUN_NAME:-qwen_vad_7b_n2}"
-usage(){ echo "Usage: $0 [-r|--root DIR] [-f|--run_flag RUN_FLAG]"; exit 1; }
+usage(){
+  echo "Usage: ROOT_DIR=/path/to/SegCompass RAY_TMPDIR=/path/to/ray PY=/path/to/python DATA_TRAIN_FILES=data/train_dir $0 [-r|--root DIR] [-f|--run_flag RUN_FLAG]"
+  exit 1
+}
 while [ $# -gt 0 ]; do case "$1" in
   -r|--root|-f|--run_flag)
     [ $# -ge 2 ] || usage; key="$1"; val="$2"; shift 2;
     case "$key" in -r|--root) ROOT_DIR="$val";; -f|--run_flag) RUN_FLAG="$val";; esac ;;
   *) usage ;; esac; done
+require_var(){
+  local name="$1"
+  if [ -z "${!name:-}" ]; then
+    echo "Error: $name is required." >&2
+    usage
+  fi
+}
+require_var ROOT_DIR
+require_var RAY_TMPDIR
+require_var PY
+require_var DATA_TRAIN_FILES
 prefix(){
   case "$1" in
     ""|null) printf '%s' "$1" ;;
@@ -31,13 +44,12 @@ cd "$ROOT_DIR"
 
 ######## Disable NCCL InfiniBand/RDMA and wandb ########
 export NCCL_IB_DISABLE=1; export WANDB_MODE=offline; export WANDB_DIR="$(prefix 'wandb')"
-export RAY_TMPDIR="${RAY_TMPDIR:-/root/autodl-tmp/ray}"
+export RAY_TMPDIR
 export SEGCOMPASS_REF_POS_TOKEN="${SEGCOMPASS_REF_POS_TOKEN:-<|object_ref_start|>}"
 mkdir -p "$RAY_TMPDIR"
 
 MODEL_PATH="${MODEL_PATH:-Qwen/Qwen2.5-VL-7B-Instruct}"
 INIT_SAE_CKPT="${INIT_SAE_CKPT:-sae_checkpoints/sae_qwen-7b_L13/default/ep_6.pt}"
-DATA_TRAIN_FILES="${DATA_TRAIN_FILES:-data/sht_video_10}"
 D_IN="${D_IN:-3584}"
 D_SAE="${D_SAE:-65536}"
 HOOK_LAYER="${HOOK_LAYER:-13}"
@@ -114,7 +126,7 @@ ARGS=(
   worker.actor.focal_loss_coef_new=5.0
 )
 
-PY="$(prefix 'segcompass/bin/python')"; [ -x "$PY" ] || PY=/root/autodl-tmp/verl_env/bin/python
+[ -x "$PY" ] || { echo "Error: PY is not executable: $PY" >&2; exit 1; }
 export PATH="$(dirname "$PY"):${PATH}"
 LOG_PATH="$(prefix "print_log_${RUN_NAME}_${RUN_FLAG}.txt")"
 

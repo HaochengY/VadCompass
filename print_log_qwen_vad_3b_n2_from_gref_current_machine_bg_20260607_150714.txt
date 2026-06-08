@@ -1,0 +1,691 @@
+2026-06-07 15:07:30,194	WARNING utils.py:594 -- Detecting docker specified CPUs. In previous versions of Ray, CPU detection in containers was incorrect. Please ensure that Ray has enough CPUs allocated. As a temporary workaround to revert to the prior behavior, set `RAY_USE_MULTIPROCESSING_CPU_COUNT=1` as an env var before starting Ray. Set the env var: `RAY_DISABLE_DOCKER_CPU_WARNING=1` to mute this warning.
+2026-06-07 15:07:31,352	INFO worker.py:1888 -- Started a local Ray instance.
+[36m(pid=8368)[0m W0607 15:07:43.431000 8368 site-packages/torch/utils/cpp_extension.py:140] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+[36m(main_task pid=8368)[0m {
+[36m(main_task pid=8368)[0m   "data": {
+[36m(main_task pid=8368)[0m     "train_files": "/root/fuxian/SegCompass/data/sht_video_10",
+[36m(main_task pid=8368)[0m     "val_files": "None",
+[36m(main_task pid=8368)[0m     "video_embed_dir": null,
+[36m(main_task pid=8368)[0m     "prompt_key": "text",
+[36m(main_task pid=8368)[0m     "max_prompt_length": 2048,
+[36m(main_task pid=8368)[0m     "max_response_length": 256,
+[36m(main_task pid=8368)[0m     "rollout_batch_size": 2,
+[36m(main_task pid=8368)[0m     "return_raw_input_ids": false,
+[36m(main_task pid=8368)[0m     "return_raw_prompt": false,
+[36m(main_task pid=8368)[0m     "system_prompt": "You are a helpful assistant.",
+[36m(main_task pid=8368)[0m     "shuffle": true,
+[36m(main_task pid=8368)[0m     "seed": 42,
+[36m(main_task pid=8368)[0m     "max_pixels": 705600,
+[36m(main_task pid=8368)[0m     "min_pixels": 3136
+[36m(main_task pid=8368)[0m   },
+[36m(main_task pid=8368)[0m   "worker": {
+[36m(main_task pid=8368)[0m     "llm_version": "qwen-2.5",
+[36m(main_task pid=8368)[0m     "hybrid_engine": false,
+[36m(main_task pid=8368)[0m     "supp_bf16": false,
+[36m(main_task pid=8368)[0m     "actor": {
+[36m(main_task pid=8368)[0m       "strategy": "fsdp",
+[36m(main_task pid=8368)[0m       "global_batch_size": 2,
+[36m(main_task pid=8368)[0m       "micro_batch_size_per_device_for_update": 1,
+[36m(main_task pid=8368)[0m       "micro_batch_size_per_device_for_experience": 1,
+[36m(main_task pid=8368)[0m       "max_grad_norm": 1.0,
+[36m(main_task pid=8368)[0m       "clip_ratio": 0.2,
+[36m(main_task pid=8368)[0m       "pg_loss_coef": 1.0,
+[36m(main_task pid=8368)[0m       "seg_loss_coef": 0.3,
+[36m(main_task pid=8368)[0m       "conf_loss_coef": 0.2,
+[36m(main_task pid=8368)[0m       "heatmap_dice_rate": 1.0,
+[36m(main_task pid=8368)[0m       "dice_loss_coef": 0.8,
+[36m(main_task pid=8368)[0m       "dice_loss_coef_new": 2.0,
+[36m(main_task pid=8368)[0m       "focal_loss_coef": 0.0,
+[36m(main_task pid=8368)[0m       "focal_loss_coef_new": 5.0,
+[36m(main_task pid=8368)[0m       "adjust_loss_step": 1500,
+[36m(main_task pid=8368)[0m       "kl_loss_coef": 0.2,
+[36m(main_task pid=8368)[0m       "entropy_coef": 0.0,
+[36m(main_task pid=8368)[0m       "use_kl_loss": true,
+[36m(main_task pid=8368)[0m       "kl_loss_type": "low_var_kl",
+[36m(main_task pid=8368)[0m       "padding_free": false,
+[36m(main_task pid=8368)[0m       "ulysses_sequence_parallel_size": 1,
+[36m(main_task pid=8368)[0m       "model": {
+[36m(main_task pid=8368)[0m         "model_path": "/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct",
+[36m(main_task pid=8368)[0m         "tokenizer_path": "/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct",
+[36m(main_task pid=8368)[0m         "override_config": {},
+[36m(main_task pid=8368)[0m         "enable_gradient_checkpointing": true,
+[36m(main_task pid=8368)[0m         "trust_remote_code": true,
+[36m(main_task pid=8368)[0m         "init_sae_ckpt": "/root/fuxian/SegCompass/sae_checkpoints/fake_qwen25vl_3b_L12_d2048_s128/ep_0.pt",
+[36m(main_task pid=8368)[0m         "k_slots": 1
+[36m(main_task pid=8368)[0m       },
+[36m(main_task pid=8368)[0m       "optim": {
+[36m(main_task pid=8368)[0m         "base_lr": 1.6e-06,
+[36m(main_task pid=8368)[0m         "lr_qb_rate": 30,
+[36m(main_task pid=8368)[0m         "lr_head_rate": 25,
+[36m(main_task pid=8368)[0m         "betas": [
+[36m(main_task pid=8368)[0m           0.9,
+[36m(main_task pid=8368)[0m           0.999
+[36m(main_task pid=8368)[0m         ],
+[36m(main_task pid=8368)[0m         "weight_decay": 0.01,
+[36m(main_task pid=8368)[0m         "lr_warmup_steps_ratio": 0.0,
+[36m(main_task pid=8368)[0m         "lr_final_div_factor": 6.7,
+[36m(main_task pid=8368)[0m         "min_lr_ratio": null,
+[36m(main_task pid=8368)[0m         "warmup_style": "constant",
+[36m(main_task pid=8368)[0m         "training_steps": -1
+[36m(main_task pid=8368)[0m       },
+[36m(main_task pid=8368)[0m       "fsdp": {
+[36m(main_task pid=8368)[0m         "enable_full_shard": true,
+[36m(main_task pid=8368)[0m         "param_offload": false,
+[36m(main_task pid=8368)[0m         "optimizer_offload": false,
+[36m(main_task pid=8368)[0m         "torch_dtype": null,
+[36m(main_task pid=8368)[0m         "mp_param_dtype": "bf16",
+[36m(main_task pid=8368)[0m         "mp_reduce_dtype": "fp32",
+[36m(main_task pid=8368)[0m         "mp_buffer_dtype": "fp32"
+[36m(main_task pid=8368)[0m       },
+[36m(main_task pid=8368)[0m       "offload": {
+[36m(main_task pid=8368)[0m         "param_offload": false,
+[36m(main_task pid=8368)[0m         "optimizer_offload": false
+[36m(main_task pid=8368)[0m       },
+[36m(main_task pid=8368)[0m       "global_batch_size_per_device": -1
+[36m(main_task pid=8368)[0m     },
+[36m(main_task pid=8368)[0m     "critic": {
+[36m(main_task pid=8368)[0m       "strategy": "fsdp",
+[36m(main_task pid=8368)[0m       "global_batch_size": 256,
+[36m(main_task pid=8368)[0m       "micro_batch_size_per_device_for_update": -1,
+[36m(main_task pid=8368)[0m       "micro_batch_size_per_device_for_experience": -1,
+[36m(main_task pid=8368)[0m       "max_grad_norm": 1.0,
+[36m(main_task pid=8368)[0m       "cliprange_value": 0.5,
+[36m(main_task pid=8368)[0m       "padding_free": false,
+[36m(main_task pid=8368)[0m       "ulysses_sequence_parallel_size": 1,
+[36m(main_task pid=8368)[0m       "model": {
+[36m(main_task pid=8368)[0m         "model_path": null,
+[36m(main_task pid=8368)[0m         "tokenizer_path": null,
+[36m(main_task pid=8368)[0m         "override_config": {},
+[36m(main_task pid=8368)[0m         "enable_gradient_checkpointing": true,
+[36m(main_task pid=8368)[0m         "trust_remote_code": true,
+[36m(main_task pid=8368)[0m         "init_sae_ckpt": "pretrained_models/sae",
+[36m(main_task pid=8368)[0m         "k_slots": null
+[36m(main_task pid=8368)[0m       },
+[36m(main_task pid=8368)[0m       "optim": {
+[36m(main_task pid=8368)[0m         "base_lr": 1e-06,
+[36m(main_task pid=8368)[0m         "lr_qb_rate": 150,
+[36m(main_task pid=8368)[0m         "lr_head_rate": 80,
+[36m(main_task pid=8368)[0m         "betas": [
+[36m(main_task pid=8368)[0m           0.9,
+[36m(main_task pid=8368)[0m           0.999
+[36m(main_task pid=8368)[0m         ],
+[36m(main_task pid=8368)[0m         "weight_decay": 0.01,
+[36m(main_task pid=8368)[0m         "lr_warmup_steps_ratio": 0.0,
+[36m(main_task pid=8368)[0m         "lr_final_div_factor": 6.7,
+[36m(main_task pid=8368)[0m         "min_lr_ratio": null,
+[36m(main_task pid=8368)[0m         "warmup_style": "constant",
+[36m(main_task pid=8368)[0m         "training_steps": -1
+[36m(main_task pid=8368)[0m       },
+[36m(main_task pid=8368)[0m       "fsdp": {
+[36m(main_task pid=8368)[0m         "enable_full_shard": true,
+[36m(main_task pid=8368)[0m         "param_offload": false,
+[36m(main_task pid=8368)[0m         "optimizer_offload": false,
+[36m(main_task pid=8368)[0m         "torch_dtype": null,
+[36m(main_task pid=8368)[0m         "mp_param_dtype": "bf16",
+[36m(main_task pid=8368)[0m         "mp_reduce_dtype": "fp32",
+[36m(main_task pid=8368)[0m         "mp_buffer_dtype": "fp32"
+[36m(main_task pid=8368)[0m       },
+[36m(main_task pid=8368)[0m       "offload": {
+[36m(main_task pid=8368)[0m         "param_offload": false,
+[36m(main_task pid=8368)[0m         "optimizer_offload": true
+[36m(main_task pid=8368)[0m       },
+[36m(main_task pid=8368)[0m       "global_batch_size_per_device": -1
+[36m(main_task pid=8368)[0m     },
+[36m(main_task pid=8368)[0m     "ref": {
+[36m(main_task pid=8368)[0m       "strategy": "fsdp",
+[36m(main_task pid=8368)[0m       "offload": {
+[36m(main_task pid=8368)[0m         "param_offload": false,
+[36m(main_task pid=8368)[0m         "optimizer_offload": true
+[36m(main_task pid=8368)[0m       },
+[36m(main_task pid=8368)[0m       "micro_batch_size_per_device_for_experience": 1,
+[36m(main_task pid=8368)[0m       "padding_free": false
+[36m(main_task pid=8368)[0m     },
+[36m(main_task pid=8368)[0m     "reward": {
+[36m(main_task pid=8368)[0m       "reward_type": "function",
+[36m(main_task pid=8368)[0m       "compute_score": "scots"
+[36m(main_task pid=8368)[0m     },
+[36m(main_task pid=8368)[0m     "rollout": {
+[36m(main_task pid=8368)[0m       "name": "vllm",
+[36m(main_task pid=8368)[0m       "temperature": 1.0,
+[36m(main_task pid=8368)[0m       "top_k": -1,
+[36m(main_task pid=8368)[0m       "top_p": 1.0,
+[36m(main_task pid=8368)[0m       "dtype": "float16",
+[36m(main_task pid=8368)[0m       "gpu_memory_utilization": 0.3,
+[36m(main_task pid=8368)[0m       "ignore_eos": false,
+[36m(main_task pid=8368)[0m       "enforce_eager": true,
+[36m(main_task pid=8368)[0m       "free_cache_engine": false,
+[36m(main_task pid=8368)[0m       "enable_chunked_prefill": false,
+[36m(main_task pid=8368)[0m       "tensor_parallel_size": 2,
+[36m(main_task pid=8368)[0m       "max_num_batched_tokens": 17408,
+[36m(main_task pid=8368)[0m       "max_num_seqs": 4,
+[36m(main_task pid=8368)[0m       "disable_log_stats": true,
+[36m(main_task pid=8368)[0m       "do_sample": true,
+[36m(main_task pid=8368)[0m       "n": 1,
+[36m(main_task pid=8368)[0m       "limit_images": 0,
+[36m(main_task pid=8368)[0m       "limit_videos": 1,
+[36m(main_task pid=8368)[0m       "prompt_length": 2048,
+[36m(main_task pid=8368)[0m       "response_length": 256,
+[36m(main_task pid=8368)[0m       "use_raw_prompt": false
+[36m(main_task pid=8368)[0m     },
+[36m(main_task pid=8368)[0m     "sae": {
+[36m(main_task pid=8368)[0m       "architecture": "standard",
+[36m(main_task pid=8368)[0m       "d_in": 2048,
+[36m(main_task pid=8368)[0m       "d_sae": 128,
+[36m(main_task pid=8368)[0m       "activation_fn_str": "relu",
+[36m(main_task pid=8368)[0m       "apply_b_dec_to_input": false,
+[36m(main_task pid=8368)[0m       "finetuning_scaling_factor": false,
+[36m(main_task pid=8368)[0m       "context_size": 4096,
+[36m(main_task pid=8368)[0m       "model_name": "llava-1.5-7b",
+[36m(main_task pid=8368)[0m       "hook_name": "blocks.16.hook_resid_post",
+[36m(main_task pid=8368)[0m       "hook_layer": 13,
+[36m(main_task pid=8368)[0m       "hook_head_index": null,
+[36m(main_task pid=8368)[0m       "prepend_bos": false,
+[36m(main_task pid=8368)[0m       "dataset_path": null,
+[36m(main_task pid=8368)[0m       "dataset_trust_remote_code": false,
+[36m(main_task pid=8368)[0m       "normalize_activations": "none",
+[36m(main_task pid=8368)[0m       "dtype": "bfloat16",
+[36m(main_task pid=8368)[0m       "device": "cpu",
+[36m(main_task pid=8368)[0m       "sae_lens_training_version": null,
+[36m(main_task pid=8368)[0m       "activation_fn_kwargs": {},
+[36m(main_task pid=8368)[0m       "neuronpedia_id": null,
+[36m(main_task pid=8368)[0m       "model_from_pretrained_kwargs": {}
+[36m(main_task pid=8368)[0m     }
+[36m(main_task pid=8368)[0m   },
+[36m(main_task pid=8368)[0m   "algorithm": {
+[36m(main_task pid=8368)[0m     "gamma": 1.0,
+[36m(main_task pid=8368)[0m     "lam": 1.0,
+[36m(main_task pid=8368)[0m     "adv_estimator": "grpo",
+[36m(main_task pid=8368)[0m     "kl_penalty": "kl",
+[36m(main_task pid=8368)[0m     "kl_type": "fixed",
+[36m(main_task pid=8368)[0m     "kl_coef": 0.0,
+[36m(main_task pid=8368)[0m     "kl_horizon": 0.0,
+[36m(main_task pid=8368)[0m     "kl_target": 0.0
+[36m(main_task pid=8368)[0m   },
+[36m(main_task pid=8368)[0m   "trainer": {
+[36m(main_task pid=8368)[0m     "total_episodes": 1,
+[36m(main_task pid=8368)[0m     "max_steps": null,
+[36m(main_task pid=8368)[0m     "project_name": "easy_r1",
+[36m(main_task pid=8368)[0m     "experiment_name": "demo",
+[36m(main_task pid=8368)[0m     "logger": [
+[36m(main_task pid=8368)[0m       "console"
+[36m(main_task pid=8368)[0m     ],
+[36m(main_task pid=8368)[0m     "val_generations_to_log_to_wandb": 0,
+[36m(main_task pid=8368)[0m     "nnodes": 1,
+[36m(main_task pid=8368)[0m     "n_gpus_per_node": 2,
+[36m(main_task pid=8368)[0m     "save_freq": -1,
+[36m(main_task pid=8368)[0m     "load_checkpoint_path": null,
+[36m(main_task pid=8368)[0m     "val_before_train": false,
+[36m(main_task pid=8368)[0m     "val_only": false,
+[36m(main_task pid=8368)[0m     "test_freq": 10000,
+[36m(main_task pid=8368)[0m     "critic_warmup": 0,
+[36m(main_task pid=8368)[0m     "remove_previous_ckpt": false,
+[36m(main_task pid=8368)[0m     "load_init_llm_hf": false,
+[36m(main_task pid=8368)[0m     "save_checkpoint_path": "/root/fuxian/SegCompass/checkpoints/qwen_vad_3b_n2_from_gref/current_machine_bg_20260607_150714",
+[36m(main_task pid=8368)[0m     "save_llm_hf_freq": null,
+[36m(main_task pid=8368)[0m     "eval_checkpoints_dir": null,
+[36m(main_task pid=8368)[0m     "eval_step_start": -1,
+[36m(main_task pid=8368)[0m     "eval_step_end": -1
+[36m(main_task pid=8368)[0m   }
+[36m(main_task pid=8368)[0m }
+[36m(main_task pid=8368)[0m Size of train dataloader: 5
+[36m(main_task pid=8368)[0m Total training steps: 5
+[36m(WorkerDict pid=8863)[0m /root/miniconda3/envs/mllm/lib/python3.10/contextlib.py:103: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+[36m(WorkerDict pid=8863)[0m   self.gen = func(*args, **kwds)
+[36m(WorkerDict pid=8863)[0m [rank1]:[W607 15:08:11.117614281 ProcessGroupNCCL.cpp:5188] Guessing device ID based on global rank. This can cause a hang if rank to GPU mapping is heterogeneous. You can specify device_id in init_process_group()
+[36m(WorkerDict pid=8638)[0m Loading weights:   0%|          | 0/824 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:   0%|          | 1/824 [00:00<08:39,  1.59it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  18%|█▊        | 147/824 [00:00<00:02, 262.68it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  27%|██▋       | 221/824 [00:01<00:02, 256.18it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  33%|███▎      | 273/824 [00:01<00:02, 260.48it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  38%|███▊      | 315/824 [00:01<00:02, 251.28it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  42%|████▏     | 350/824 [00:01<00:01, 265.24it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  47%|████▋     | 385/824 [00:01<00:01, 265.85it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  51%|█████     | 417/824 [00:01<00:01, 258.32it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  58%|█████▊    | 480/824 [00:01<00:01, 339.63it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  68%|██████▊   | 563/824 [00:01<00:00, 456.85it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  77%|███████▋  | 632/824 [00:02<00:00, 513.07it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  87%|████████▋ | 714/824 [00:02<00:00, 594.37it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  96%|█████████▌| 792/824 [00:02<00:00, 638.05it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights: 100%|██████████| 824/824 [00:02<00:00, 343.19it/s]
+[36m(WorkerDict pid=8638)[0m NCCL version 2.28.9+cuda13.0
+[36m(WorkerDict pid=8638)[0m /root/miniconda3/envs/mllm/lib/python3.10/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+[36m(WorkerDict pid=8638)[0m   return func(*args, **kwargs)
+[36m(WorkerDict pid=8638)[0m Qwen2_5_VLForConditionalGeneration contains 3.75B parameters
+[36m(WorkerDict pid=8638)[0m After init from huggingface model, memory allocated (GB): 4.76837158203125e-07, memory reserved (GB): 0.001953125.
+[36m(WorkerDict pid=8638)[0m FSDP wrap policy: functools.partial(<function transformer_auto_wrap_policy at 0x7f0cacb137f0>, transformer_layer_cls={<class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLDecoderLayer'>, <class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLVisionBlock'>}).
+[36m(WorkerDict pid=8638)[0m After Actor FSDP init, memory allocated (GB): 3.5149097442626953, memory reserved (GB): 5.158203125.
+[36m(WorkerDict pid=8638)[0m /root/fuxian/SegCompass/verl/modeling.py:415: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+[36m(WorkerDict pid=8638)[0m   self.encoder = nn.TransformerEncoder(enc_layer, num_layers=num_layers)
+[36m(WorkerDict pid=8638)[0m /root/miniconda3/envs/mllm/lib/python3.10/contextlib.py:103: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+[36m(WorkerDict pid=8638)[0m   self.gen = func(*args, **kwds)
+[36m(WorkerDict pid=8638)[0m [rank0]:[W607 15:08:15.828937663 ProcessGroupNCCL.cpp:5188] Guessing device ID based on global rank. This can cause a hang if rank to GPU mapping is heterogeneous. You can specify device_id in init_process_group()
+[36m(WorkerDict pid=8638)[0m After actor optimizer init, memory allocated (GB): 3.564899444580078, memory reserved (GB): 5.158203125.
+[36m(WorkerDict pid=8638)[0m /root/fuxian/SegCompass/verl/workers/fsdp_workers.py:282: FutureWarning: The `NO_SHARD` sharding strategy is deprecated. If having issues, please use `DistributedDataParallel` instead.
+[36m(WorkerDict pid=8638)[0m   self.fsdp_module = FSDP(
+[36m(WorkerDict pid=8638)[0m Loading weights:   0%|          | 0/824 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:   0%|          | 1/824 [00:00<03:37,  3.79it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:   8%|▊         | 65/824 [00:00<00:03, 222.37it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  12%|█▏        | 101/824 [00:00<00:02, 250.08it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  16%|█▋        | 134/824 [00:00<00:02, 267.06it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  20%|██        | 166/824 [00:00<00:02, 262.89it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  24%|██▍       | 196/824 [00:00<00:02, 254.08it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  28%|██▊       | 231/824 [00:00<00:02, 260.23it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  31%|███▏      | 259/824 [00:01<00:02, 262.60it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  35%|███▌      | 291/824 [00:01<00:01, 271.77it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  39%|███▊      | 319/824 [00:01<00:01, 272.27it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  43%|████▎     | 351/824 [00:01<00:01, 269.58it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  46%|████▌     | 379/824 [00:01<00:01, 269.03it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  50%|████▉     | 411/824 [00:01<00:01, 264.35it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  61%|██████    | 500/824 [00:01<00:00, 428.76it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  74%|███████▍  | 612/824 [00:01<00:00, 611.78it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  86%|████████▌ | 706/824 [00:01<00:00, 703.52it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  97%|█████████▋| 798/824 [00:02<00:00, 758.05it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights: 100%|██████████| 824/824 [00:02<00:00, 385.95it/s]
+[36m(WorkerDict pid=8638)[0m Qwen2_5_VLForConditionalGeneration contains 3.75B parameters
+[36m(WorkerDict pid=8638)[0m After init from huggingface model, memory allocated (GB): 3.564899444580078, memory reserved (GB): 3.69921875.
+[36m(WorkerDict pid=8638)[0m FSDP wrap policy: functools.partial(<function transformer_auto_wrap_policy at 0x7f0cacb137f0>, transformer_layer_cls={<class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLDecoderLayer'>, <class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLVisionBlock'>}).
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:23 [utils.py:240] non-default args: {'dtype': torch.float16, 'max_model_len': 2304, 'distributed_executor_backend': 'external_launcher', 'tensor_parallel_size': 2, 'gpu_memory_utilization': 0.3, 'max_num_batched_tokens': 17408, 'max_num_seqs': 4, 'disable_log_stats': True, 'enforce_eager': True, 'disable_custom_all_reduce': True, 'limit_mm_per_prompt': {'image': 0, 'video': 1}, 'enable_chunked_prefill': False, 'enable_sleep_mode': True, 'model': '/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct'}
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:23 [envs.py:1866] Unknown vLLM environment variable detected: VLLM_ATTENTION_BACKEND
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:23 [envs.py:1866] Unknown vLLM environment variable detected: VLLM_USE_TRITON
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:23 [model.py:568] Resolved architecture: Qwen2_5_VLForConditionalGeneration
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:23 [model.py:2035] Casting torch.bfloat16 to torch.float16.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:23 [model.py:1697] Using max model len 2304
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:23 [arg_utils.py:2318] This model does not officially support disabling chunked prefill. Disabling this manually may cause the engine to crash or produce incorrect outputs.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:23 [arg_utils.py:1739] Using ray runtime env (env vars redacted): {'env_vars': {'MASTER_ADDR': '***', 'MASTER_PORT': '***', 'NCCL_DEBUG': '***', 'RANK': '***', 'RAY_LOCAL_RANK': '***', 'RAY_LOCAL_WORLD_SIZE': '***', 'TOKENIZERS_PARALLELISM': '***', 'WG_BACKEND': '***', 'WG_PREFIX': '***', 'WORLD_SIZE': '***'}}
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:23 [parallel.py:769] Using external launcher for distributed inference.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:23 [parallel.py:829] Disabling V1 multiprocessing for external launcher.
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:23 [scheduler.py:281] max_num_batched_tokens (17408) exceeds max_num_seqs * max_model_len (9216). This may lead to unexpected behavior.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:23 [vllm.py:886] Asynchronous scheduling is enabled.
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:23 [vllm.py:942] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:23 [vllm.py:960] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:23 [kernel.py:212] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:23 [vllm.py:1135] Cudagraph is disabled under eager mode
+[36m(WorkerDict pid=8638)[0m Before building vllm rollout, memory allocated (GB): 7.0788445472717285, memory reserved (GB): 8.697265625.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:24 [arg_utils.py:1739] Using ray runtime env (env vars redacted): {'env_vars': {'NCCL_DEBUG': '***', 'RANK': '***', 'RAY_LOCAL_RANK': '***', 'RAY_LOCAL_WORLD_SIZE': '***', 'TOKENIZERS_PARALLELISM': '***', 'WG_BACKEND': '***', 'WG_PREFIX': '***', 'WORLD_SIZE': '***'}}
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:24 [compilation.py:303] Enabled custom fusions: norm_quant, act_quant
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:30 [core.py:109] Initializing a V1 LLM engine (v0.21.0) with config: model='/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct', speculative_config=None, tokenizer='/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.float16, max_seq_len=2304, download_dir=None, load_format=auto, tensor_parallel_size=2, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=True, quantization=None, quantization_config=None, enforce_eager=True, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False), seed=0, served_model_name=/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct, enable_prefix_caching=True, enable_chunked_prefill=False, pooler_config=None, compilation_config={'mode': <CompilationMode.NONE: 0>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['all'], 'ir_enable_torch_wrap': False, 'splitting_ops': [], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [17408], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'size_asserts': False, 'alignment_asserts': False, 'scalar_asserts': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.NONE: 0>, 'cudagraph_num_of_warmups': 0, 'cudagraph_capture_sizes': [], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': True, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'fuse_act_padding': False}, 'max_cudagraph_capture_size': 0, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native']), enable_flashinfer_autotune=False, moe_backend='auto')
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:24 [utils.py:240] non-default args: {'dtype': torch.float16, 'max_model_len': 2304, 'distributed_executor_backend': 'external_launcher', 'tensor_parallel_size': 2, 'gpu_memory_utilization': 0.3, 'max_num_batched_tokens': 17408, 'max_num_seqs': 4, 'disable_log_stats': True, 'enforce_eager': True, 'disable_custom_all_reduce': True, 'limit_mm_per_prompt': {'image': 0, 'video': 1}, 'enable_chunked_prefill': False, 'enable_sleep_mode': True, 'model': '/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct'}
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:24 [envs.py:1866] Unknown vLLM environment variable detected: VLLM_ATTENTION_BACKEND
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:24 [envs.py:1866] Unknown vLLM environment variable detected: VLLM_USE_TRITON
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:24 [model.py:568] Resolved architecture: Qwen2_5_VLForConditionalGeneration
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:24 [model.py:2035] Casting torch.bfloat16 to torch.float16.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:24 [model.py:1697] Using max model len 2304
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:24 [arg_utils.py:2318] This model does not officially support disabling chunked prefill. Disabling this manually may cause the engine to crash or produce incorrect outputs.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:24 [parallel.py:769] Using external launcher for distributed inference.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:24 [parallel.py:829] Disabling V1 multiprocessing for external launcher.
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:24 [scheduler.py:281] max_num_batched_tokens (17408) exceeds max_num_seqs * max_model_len (9216). This may lead to unexpected behavior.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:24 [vllm.py:886] Asynchronous scheduling is enabled.
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:24 [vllm.py:942] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:24 [vllm.py:960] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:24 [kernel.py:212] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:24 [vllm.py:1135] Cudagraph is disabled under eager mode
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:31 [pynccl.py:111] vLLM is using nccl==2.28.9
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:32 [symm_mem.py:66] SymmMemCommunicator: Device capability 8.9 not supported, communicator is not available.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:32 [parallel_state.py:1723] rank 0 in world size 2 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, EP rank N/A, EPLB rank N/A
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:32 [topk_topp_sampler.py:45] Using FlashInfer for top-p & top-k sampling.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:32 [gpu_model_runner.py:4857] Starting to load model /root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct...
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:32 [cuda.py:427] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:32 [mm_encoder_attention.py:372] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:32 [vllm.py:942] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:32 [vllm.py:960] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:32 [kernel.py:212] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:32 [vllm.py:1135] Cudagraph is disabled under eager mode
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:32 [cuda.py:372] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:33 [flash_attn.py:641] Using FlashAttention version 2
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:33 [weight_utils.py:938] Filesystem type for checkpoints: XFS. Checkpoint size: 6.99 GiB. Available RAM: 436.44 GiB.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:33 [weight_utils.py:961] Auto-prefetch is disabled because the filesystem (XFS) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+[36m(WorkerDict pid=8638)[0m Loading safetensors checkpoint shards:   0% Completed | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8863)[0m /root/fuxian/SegCompass/verl/modeling.py:415: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+[36m(WorkerDict pid=8863)[0m   self.encoder = nn.TransformerEncoder(enc_layer, num_layers=num_layers)
+[36m(WorkerDict pid=8863)[0m /root/fuxian/SegCompass/verl/workers/fsdp_workers.py:282: FutureWarning: The `NO_SHARD` sharding strategy is deprecated. If having issues, please use `DistributedDataParallel` instead.
+[36m(WorkerDict pid=8863)[0m   self.fsdp_module = FSDP(
+[36m(WorkerDict pid=8638)[0m Loading safetensors checkpoint shards:  50% Completed | 1/2 [00:01<00:01,  1.33s/it]
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:35 [default_loader.py:397] Loading weights took 2.48 seconds
+[36m(WorkerDict pid=8638)[0m Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:02<00:00,  1.18s/it]
+[36m(WorkerDict pid=8638)[0m Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:02<00:00,  1.21s/it]
+[36m(WorkerDict pid=8638)[0m 
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:36 [gpu_model_runner.py:4959] Model loading took 3.68 GiB memory and 2.800998 seconds
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:31 [core.py:109] Initializing a V1 LLM engine (v0.21.0) with config: model='/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct', speculative_config=None, tokenizer='/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.float16, max_seq_len=2304, download_dir=None, load_format=auto, tensor_parallel_size=2, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=True, quantization=None, quantization_config=None, enforce_eager=True, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False), seed=0, served_model_name=/root/autodl-tmp/get_hf/Qwen2.5-VL-3B-Instruct, enable_prefix_caching=True, enable_chunked_prefill=False, pooler_config=None, compilation_config={'mode': <CompilationMode.NONE: 0>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['all'], 'ir_enable_torch_wrap': False, 'splitting_ops': [], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [17408], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'size_asserts': False, 'alignment_asserts': False, 'scalar_asserts': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.NONE: 0>, 'cudagraph_num_of_warmups': 0, 'cudagraph_capture_sizes': [], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': True, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'fuse_act_padding': False}, 'max_cudagraph_capture_size': 0, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native']), enable_flashinfer_autotune=False, moe_backend='auto')
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:36 [gpu_model_runner.py:5920] Encoder cache will be initialized with a budget of 17408 tokens, and profiled with 1 video items of the maximum feature size.
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:37 [op.py:290] Priority not set for op rms_norm, using native implementation.
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:32 [symm_mem.py:66] SymmMemCommunicator: Device capability 8.9 not supported, communicator is not available.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:32 [parallel_state.py:1723] rank 1 in world size 2 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 1, EP rank N/A, EPLB rank N/A
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:32 [cuda.py:427] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:32 [mm_encoder_attention.py:372] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:32 [vllm.py:942] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:32 [vllm.py:960] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:32 [kernel.py:212] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:32 [vllm.py:1135] Cudagraph is disabled under eager mode
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:32 [cuda.py:372] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:32 [flash_attn.py:641] Using FlashAttention version 2
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:33 [weight_utils.py:938] Filesystem type for checkpoints: XFS. Checkpoint size: 6.99 GiB. Available RAM: 436.40 GiB.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:33 [weight_utils.py:961] Auto-prefetch is disabled because the filesystem (XFS) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:08:38 [op.py:290] Priority not set for op fused_add_rms_norm, using native implementation.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:43 [gpu_worker.py:462] Available KV cache memory: 4.48 GiB
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:43 [kv_cache_utils.py:1710] GPU KV cache size: 261,136 tokens
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:43 [kv_cache_utils.py:1711] Maximum concurrency for 2,304 tokens per request: 113.34x
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:35 [default_loader.py:397] Loading weights took 2.51 seconds
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:36 [gpu_model_runner.py:4959] Model loading took 3.68 GiB memory and 2.832313 seconds
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:36 [gpu_model_runner.py:5920] Encoder cache will be initialized with a budget of 17408 tokens, and profiled with 1 video items of the maximum feature size.
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:38 [op.py:290] Priority not set for op rms_norm, using native implementation.
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:08:38 [op.py:290] Priority not set for op fused_add_rms_norm, using native implementation.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:43 [kernel_warmup.py:44] Skipping FlashInfer autotune because it is disabled.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:43 [jit_monitor.py:54] Kernel JIT monitor activated — Triton JIT compilations during inference will be logged as warnings.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:43 [core.py:306] init engine (profile, create kv cache, warmup model) took 7.61 s
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:44 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:46 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:46 [gpu_worker.py:178] Sleep mode freed 8.27 GiB memory, 7.81 GiB memory is still in use.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:46 [abstract.py:331] It took 2.402609 seconds to fall asleep.
+[36m(WorkerDict pid=8638)[0m Sampling params: {'max_tokens': 256, 'detokenize': False, 'temperature': 1.0, 'top_k': -1, 'top_p': 1.0, 'ignore_eos': False, 'n': 1}.
+[36m(WorkerDict pid=8638)[0m After building vllm rollout, memory allocated (GB): 15.344790935516357, memory reserved (GB): 16.08984375.
+[36m(WorkerDict pid=8638)[0m After building sharding manager, memory allocated (GB): 15.344790935516357, memory reserved (GB): 16.08984375.
+[36m(WorkerDict pid=8638)[0m /root/fuxian/SegCompass/verl/workers/sharding_manager/fsdp_vllm.py:47: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=8638)[0m   FSDP.set_state_dict_type(
+[36m(WorkerDict pid=8638)[0m /root/miniconda3/envs/mllm/lib/python3.10/contextlib.py:103: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+[36m(WorkerDict pid=8638)[0m   self.gen = func(*args, **kwds)
+[36m(WorkerDict pid=8638)[0m Loading weights:   0%|          | 0/824 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:   0%|          | 1/824 [00:00<08:23,  1.63it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  18%|█▊        | 149/824 [00:00<00:02, 281.31it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  29%|██▊       | 236/824 [00:01<00:02, 273.19it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  36%|███▌      | 296/824 [00:01<00:01, 277.57it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  42%|████▏     | 344/824 [00:01<00:01, 276.59it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  47%|████▋     | 385/824 [00:01<00:01, 277.57it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  51%|█████     | 422/824 [00:01<00:01, 280.45it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  59%|█████▉    | 490/824 [00:01<00:00, 362.13it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  71%|███████   | 582/824 [00:01<00:00, 485.56it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  82%|████████▏ | 678/824 [00:02<00:00, 589.16it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights:  94%|█████████▍| 773/824 [00:02<00:00, 680.78it/s]
+[36m(WorkerDict pid=8638)[0m Loading weights: 100%|██████████| 824/824 [00:02<00:00, 372.44it/s]
+[36m(WorkerDict pid=8638)[0m Qwen2_5_VLForConditionalGeneration contains 3.75B parameters
+[36m(WorkerDict pid=8638)[0m After init from huggingface model, memory allocated (GB): 15.344791412353516, memory reserved (GB): 16.08984375.
+[36m(WorkerDict pid=8638)[0m FSDP wrap policy: functools.partial(<function transformer_auto_wrap_policy at 0x7f0cacb137f0>, transformer_layer_cls={<class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLDecoderLayer'>, <class 'transformers.models.qwen2_5_vl.modeling_qwen2_5_vl.Qwen2_5_VLVisionBlock'>}).
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:43 [gpu_worker.py:462] Available KV cache memory: 4.48 GiB
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:43 [kv_cache_utils.py:1710] GPU KV cache size: 261,136 tokens
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:43 [kv_cache_utils.py:1711] Maximum concurrency for 2,304 tokens per request: 113.34x
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:43 [kernel_warmup.py:44] Skipping FlashInfer autotune because it is disabled.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:43 [jit_monitor.py:54] Kernel JIT monitor activated — Triton JIT compilations during inference will be logged as warnings.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:43 [core.py:306] init engine (profile, create kv cache, warmup model) took 7.61 s
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:44 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8638)[0m /root/miniconda3/envs/mllm/lib/python3.10/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+[36m(WorkerDict pid=8638)[0m   return func(*args, **kwargs)
+[36m(WorkerDict pid=8863)[0m /root/fuxian/SegCompass/verl/modeling.py:415: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+[36m(WorkerDict pid=8863)[0m   self.encoder = nn.TransformerEncoder(enc_layer, num_layers=num_layers)
+[36m(WorkerDict pid=8863)[0m /root/fuxian/SegCompass/verl/workers/sharding_manager/fsdp_vllm.py:47: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=8863)[0m   FSDP.set_state_dict_type(
+[36m(WorkerDict pid=8638)[0m After Actor FSDP init, memory allocated (GB): 18.859700679779053, memory reserved (GB): 21.2265625.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:46 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:46 [gpu_worker.py:178] Sleep mode freed 8.27 GiB memory, 8.06 GiB memory is still in use.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:46 [abstract.py:331] It took 2.347030 seconds to fall asleep.
+[36m(WorkerDict pid=8863)[0m Sampling params: {'max_tokens': 256, 'detokenize': False, 'temperature': 1.0, 'top_k': -1, 'top_p': 1.0, 'ignore_eos': False, 'n': 1}.
+[36m(WorkerDict pid=8863)[0m /root/fuxian/SegCompass/verl/workers/fsdp_workers.py:282: FutureWarning: The `NO_SHARD` sharding strategy is deprecated. If having issues, please use `DistributedDataParallel` instead.
+[36m(WorkerDict pid=8863)[0m   self.fsdp_module = FSDP(
+[36m(WorkerDict pid=8638)[0m After actor optimizer init, memory allocated (GB): 18.909690380096436, memory reserved (GB): 21.2265625.
+[36m(main_task pid=8368)[0m qwen-vl-utils using decord to read video.
+[36m(main_task pid=8368)[0m qwen-vl-utils using decord to read video.qwen-vl-utils using decord to read video.
+[36m(main_task pid=8368)[0m 
+[36m(main_task pid=8368)[0m qwen-vl-utils using decord to read video.
+[36m(main_task pid=8368)[0m qwen-vl-utils using decord to read video.
+[36m(WorkerDict pid=8863)[0m /root/miniconda3/envs/mllm/lib/python3.10/contextlib.py:103: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+[36m(WorkerDict pid=8863)[0m   self.gen = func(*args, **kwds)
+[36m(WorkerDict pid=8638)[0m Before state_dict() in sharding manager, memory allocated (GB): 18.909690380096436, memory reserved (GB): 19.787109375.
+[36m(WorkerDict pid=8638)[0m After state_dict() in sharding manager, memory allocated (GB): 22.743711948394775, memory reserved (GB): 24.9921875.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:08:55 [abstract.py:349] It took 0.464127 seconds to wake up tags {'kv_cache', 'weights'}.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:08:55 [abstract.py:349] It took 0.461266 seconds to wake up tags {'weights', 'kv_cache'}.
+[36m(WorkerDict pid=8638)[0m After sync model weights in sharding manager, memory allocated (GB): 22.743711948394775, memory reserved (GB): 24.9921875.
+[36m(WorkerDict pid=8638)[0m After del state_dict and empty_cache in sharding manager, memory allocated (GB): 18.909690380096436, memory reserved (GB): 19.787109375.
+[36m(WorkerDict pid=8638)[0m After entering rollout sharding manager, memory allocated (GB): 18.909690380096436, memory reserved (GB): 19.787109375.
+[36m(WorkerDict pid=8638)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:09:09 [jit_monitor.py:103] Triton kernel JIT compilation during inference: _compute_slot_mapping_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:09:09 [jit_monitor.py:103] Triton kernel JIT compilation during inference: rotary_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(WorkerDict pid=8638)[0m Rendering prompts:  50%|█████     | 1/2 [00:13<00:13, 13.06s/it]Rendering prompts: 100%|██████████| 2/2 [00:13<00:00,  6.55s/it]
+[36m(WorkerDict pid=8638)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=8638)[0m /root/fuxian/SegCompass/verl/modeling.py:415: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+[36m(WorkerDict pid=8638)[0m   self.encoder = nn.TransformerEncoder(enc_layer, num_layers=num_layers)
+[36m(WorkerDict pid=8638)[0m /root/fuxian/SegCompass/verl/workers/fsdp_workers.py:282: FutureWarning: The `NO_SHARD` sharding strategy is deprecated. If having issues, please use `DistributedDataParallel` instead.
+[36m(WorkerDict pid=8638)[0m   self.fsdp_module = FSDP(
+[36m(WorkerDict pid=8863)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8863)[0m Rendering prompts:  50%|█████     | 1/2 [00:14<00:14, 14.29s/it]
+[36m(WorkerDict pid=8863)[0m Rendering prompts: 100%|██████████| 2/2 [00:14<00:00,  7.18s/it]
+[36m(WorkerDict pid=8638)[0m Processed prompts:  50%|█████     | 1/2 [00:03<00:03,  3.17s/it, est. speed input: 526.28 toks/s, output: 6.00 toks/s]
+[36m(WorkerDict pid=8638)[0m WARNING 06-07 15:09:12 [jit_monitor.py:103] Triton kernel JIT compilation during inference: _triton_mrope_forward. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(WorkerDict pid=8638)[0m After rollout generation, memory allocated (GB): 18.92302417755127, memory reserved (GB): 20.134765625.
+[36m(WorkerDict pid=8638)[0m Before vllm offload in sharding manager, memory allocated (GB): 18.92302417755127, memory reserved (GB): 20.134765625.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:19 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:09:10 [jit_monitor.py:103] Triton kernel JIT compilation during inference: _compute_slot_mapping_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:09:10 [jit_monitor.py:103] Triton kernel JIT compilation during inference: rotary_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(WorkerDict pid=8863)[0m WARNING 06-07 15:09:12 [jit_monitor.py:103] Triton kernel JIT compilation during inference: _triton_mrope_forward. This causes a latency spike; consider extending warmup to cover this shape/config.
+[36m(WorkerDict pid=8638)[0m Processed prompts: 100%|██████████| 2/2 [00:09<00:00,  5.16s/it, est. speed input: 342.64 toks/s, output: 28.26 toks/s]Processed prompts: 100%|██████████| 2/2 [00:09<00:00,  5.16s/it, est. speed input: 342.64 toks/s, output: 28.26 toks/s]Processed prompts: 100%|██████████| 2/2 [00:09<00:00,  4.87s/it, est. speed input: 342.64 toks/s, output: 28.26 toks/s]
+[36m(WorkerDict pid=8863)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=8863)[0m Processed prompts:  50%|█████     | 1/2 [00:01<00:01,  1.91s/it, est. speed input: 874.78 toks/s, output: 9.97 toks/s]
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:19 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:19 [gpu_worker.py:178] Sleep mode freed 8.6 GiB memory, 11.51 GiB memory is still in use.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:19 [abstract.py:331] It took 0.411401 seconds to fall asleep.
+[36m(WorkerDict pid=8638)[0m After vllm offload in sharding manager, memory allocated (GB): 18.910962104797363, memory reserved (GB): 19.7890625.
+[36m(WorkerDict pid=8638)[0m After recompute log prob, memory allocated (GB): 18.910786628723145, memory reserved (GB): 19.7890625.
+[36m(WorkerDict pid=8638)[0m Compute log probs:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m After compute log prob and detached seg outputs, memory allocated (GB): 18.917349815368652, memory reserved (GB): 19.7890625.
+[36m(WorkerDict pid=8638)[0m Compute log probs: 100%|██████████| 1/1 [00:02<00:00,  2.06s/it]Compute log probs: 100%|██████████| 1/1 [00:02<00:00,  2.06s/it]
+[36m(WorkerDict pid=8638)[0m Compute log probs:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Compute log probs: 100%|██████████| 1/1 [00:00<00:00,  1.20it/s]Compute log probs: 100%|██████████| 1/1 [00:00<00:00,  1.20it/s]
+[36m(WorkerDict pid=8638)[0m After compute_ref_log_prob, memory allocated (GB): 18.923378944396973, memory reserved (GB): 19.7890625.
+[36m(WorkerDict pid=8638)[0m Before update policy, memory allocated (GB): 18.923378944396973, memory reserved (GB): 19.7890625.
+[36m(WorkerDict pid=8638)[0m Update policy [1/1]:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Update policy [1/1]: 100%|██████████| 1/1 [00:05<00:00,  5.84s/it]Update policy [1/1]: 100%|██████████| 1/1 [00:05<00:00,  5.84s/it]
+[36m(WorkerDict pid=8863)[0m Processed prompts: 100%|██████████| 2/2 [00:08<00:00,  4.66s/it, est. speed input: 392.47 toks/s, output: 32.37 toks/s]Processed prompts: 100%|██████████| 2/2 [00:08<00:00,  4.66s/it, est. speed input: 392.47 toks/s, output: 32.37 toks/s]Processed prompts: 100%|██████████| 2/2 [00:08<00:00,  4.25s/it, est. speed input: 392.47 toks/s, output: 32.37 toks/s]
+[36m(WorkerDict pid=8638)[0m After update policy, memory allocated (GB): 23.86597204208374, memory reserved (GB): 31.384765625.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:19 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:19 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:19 [gpu_worker.py:178] Sleep mode freed 8.37 GiB memory, 12.02 GiB memory is still in use.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:19 [abstract.py:331] It took 0.405143 seconds to fall asleep.
+[36m(WorkerDict pid=8638)[0m Before state_dict() in sharding manager, memory allocated (GB): 23.86597204208374, memory reserved (GB): 25.205078125.
+[36m(WorkerDict pid=8638)[0m After state_dict() in sharding manager, memory allocated (GB): 27.704926013946533, memory reserved (GB): 30.25.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:30 [abstract.py:349] It took 0.480709 seconds to wake up tags {'kv_cache', 'weights'}.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:30 [abstract.py:349] It took 0.482531 seconds to wake up tags {'weights', 'kv_cache'}.
+[36m(WorkerDict pid=8638)[0m After sync model weights in sharding manager, memory allocated (GB): 27.704926013946533, memory reserved (GB): 30.251953125.
+[36m(WorkerDict pid=8638)[0m After del state_dict and empty_cache in sharding manager, memory allocated (GB): 23.86597204208374, memory reserved (GB): 25.205078125.
+[36m(WorkerDict pid=8638)[0m After entering rollout sharding manager, memory allocated (GB): 23.86597204208374, memory reserved (GB): 25.205078125.
+[36m(WorkerDict pid=8638)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 14.24it/s]Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 14.21it/s]
+[36m(WorkerDict pid=8638)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=8638)[0m Processed prompts:  50%|█████     | 1/2 [00:01<00:01,  1.15s/it, est. speed input: 1449.74 toks/s, output: 14.78 toks/s]
+[36m(WorkerDict pid=8863)[0m Processed prompts: 100%|██████████| 2/2 [00:02<00:00,  1.16s/it, est. speed input: 1442.75 toks/s, output: 33.32 toks/s]Processed prompts: 100%|██████████| 2/2 [00:02<00:00,  1.16s/it, est. speed input: 1442.75 toks/s, output: 33.32 toks/s]Processed prompts: 100%|██████████| 2/2 [00:02<00:00,  1.16s/it, est. speed input: 1442.75 toks/s, output: 33.32 toks/s]
+[36m(WorkerDict pid=8638)[0m After rollout generation, memory allocated (GB): 23.878438472747803, memory reserved (GB): 25.6171875.
+[36m(WorkerDict pid=8638)[0m Before vllm offload in sharding manager, memory allocated (GB): 23.878438472747803, memory reserved (GB): 25.6171875.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:33 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:33 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:33 [gpu_worker.py:178] Sleep mode freed 8.67 GiB memory, 16.94 GiB memory is still in use.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:33 [abstract.py:331] It took 0.413094 seconds to fall asleep.
+[36m(WorkerDict pid=8638)[0m After vllm offload in sharding manager, memory allocated (GB): 23.866300106048584, memory reserved (GB): 25.205078125.
+[36m(WorkerDict pid=8638)[0m After recompute log prob, memory allocated (GB): 23.866124629974365, memory reserved (GB): 25.205078125.
+[36m(WorkerDict pid=8638)[0m Compute log probs:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Compute log probs: 100%|██████████| 1/1 [00:01<00:00,  1.68s/it]Compute log probs: 100%|██████████| 1/1 [00:01<00:00,  1.68s/it]
+[36m(WorkerDict pid=8638)[0m After compute log prob and detached seg outputs, memory allocated (GB): 22.19678783416748, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Compute log probs:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Compute log probs: 100%|██████████| 1/1 [00:00<00:00,  1.26it/s]Compute log probs: 100%|██████████| 1/1 [00:00<00:00,  1.26it/s]
+[36m(WorkerDict pid=8863)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8863)[0m Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 14.28it/s]Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 14.26it/s]
+[36m(WorkerDict pid=8863)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=8638)[0m After compute_ref_log_prob, memory allocated (GB): 22.197587966918945, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Before update policy, memory allocated (GB): 22.197587966918945, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Update policy [1/1]:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Update policy [1/1]: 100%|██████████| 1/1 [00:05<00:00,  5.39s/it]Update policy [1/1]: 100%|██████████| 1/1 [00:05<00:00,  5.39s/it]
+[36m(WorkerDict pid=8863)[0m Processed prompts:  50%|█████     | 1/2 [00:01<00:01,  1.14s/it, est. speed input: 1457.07 toks/s, output: 14.86 toks/s]
+[36m(WorkerDict pid=8638)[0m Processed prompts: 100%|██████████| 2/2 [00:02<00:00,  1.17s/it, est. speed input: 1430.88 toks/s, output: 33.05 toks/s]Processed prompts: 100%|██████████| 2/2 [00:02<00:00,  1.17s/it, est. speed input: 1430.88 toks/s, output: 33.05 toks/s]Processed prompts: 100%|██████████| 2/2 [00:02<00:00,  1.17s/it, est. speed input: 1430.88 toks/s, output: 33.05 toks/s]
+[36m(WorkerDict pid=8638)[0m After update policy, memory allocated (GB): 23.867576122283936, memory reserved (GB): 33.48046875.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:33 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:33 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:33 [gpu_worker.py:178] Sleep mode freed 8.63 GiB memory, 17.15 GiB memory is still in use.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:33 [abstract.py:331] It took 0.409755 seconds to fall asleep.
+[36m(WorkerDict pid=8638)[0m Before state_dict() in sharding manager, memory allocated (GB): 23.867576122283936, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m After state_dict() in sharding manager, memory allocated (GB): 27.707544326782227, memory reserved (GB): 30.232421875.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:43 [abstract.py:349] It took 0.464051 seconds to wake up tags {'kv_cache', 'weights'}.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:43 [abstract.py:349] It took 0.463091 seconds to wake up tags {'weights', 'kv_cache'}.
+[36m(WorkerDict pid=8638)[0m After sync model weights in sharding manager, memory allocated (GB): 27.707544326782227, memory reserved (GB): 30.234375.
+[36m(WorkerDict pid=8638)[0m After del state_dict and empty_cache in sharding manager, memory allocated (GB): 23.867576122283936, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m After entering rollout sharding manager, memory allocated (GB): 23.867576122283936, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8863)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8863)[0m Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 16.99it/s]Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 16.96it/s]
+[36m(WorkerDict pid=8863)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=8863)[0m Processed prompts:  50%|█████     | 1/2 [00:02<00:02,  2.56s/it, est. speed input: 650.18 toks/s, output: 15.60 toks/s]
+[36m(WorkerDict pid=8638)[0m After rollout generation, memory allocated (GB): 23.880042552947998, memory reserved (GB): 25.697265625.
+[36m(WorkerDict pid=8638)[0m Before vllm offload in sharding manager, memory allocated (GB): 23.880042552947998, memory reserved (GB): 25.697265625.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:47 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8638)[0m Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.42s/it, est. speed input: 1060.70 toks/s, output: 30.54 toks/s]Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.42s/it, est. speed input: 1060.70 toks/s, output: 30.54 toks/s]Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.57s/it, est. speed input: 1060.70 toks/s, output: 30.54 toks/s]
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:47 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:47 [gpu_worker.py:178] Sleep mode freed 8.67 GiB memory, 17.02 GiB memory is still in use.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:47 [abstract.py:331] It took 0.426486 seconds to fall asleep.
+[36m(WorkerDict pid=8638)[0m After vllm offload in sharding manager, memory allocated (GB): 23.86790418624878, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m After recompute log prob, memory allocated (GB): 23.86772871017456, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m Compute log probs:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Compute log probs: 100%|██████████| 1/1 [00:01<00:00,  1.90s/it]Compute log probs: 100%|██████████| 1/1 [00:01<00:00,  1.90s/it]
+[36m(WorkerDict pid=8638)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 11.38it/s]Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 11.36it/s]
+[36m(WorkerDict pid=8638)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=8638)[0m After compute log prob and detached seg outputs, memory allocated (GB): 22.197470664978027, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Compute log probs:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m After compute_ref_log_prob, memory allocated (GB): 22.197468757629395, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Compute log probs: 100%|██████████| 1/1 [00:00<00:00,  1.11it/s]Compute log probs: 100%|██████████| 1/1 [00:00<00:00,  1.11it/s]
+[36m(WorkerDict pid=8638)[0m Before update policy, memory allocated (GB): 22.197468757629395, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Update policy [1/1]:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Update policy [1/1]: 100%|██████████| 1/1 [00:05<00:00,  5.78s/it]Update policy [1/1]: 100%|██████████| 1/1 [00:05<00:00,  5.78s/it]
+[36m(WorkerDict pid=8638)[0m Processed prompts:  50%|█████     | 1/2 [00:02<00:02,  2.45s/it, est. speed input: 680.78 toks/s, output: 16.34 toks/s]
+[36m(WorkerDict pid=8863)[0m Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.47s/it, est. speed input: 1022.78 toks/s, output: 29.45 toks/s]Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.47s/it, est. speed input: 1022.78 toks/s, output: 29.45 toks/s]Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.63s/it, est. speed input: 1022.78 toks/s, output: 29.45 toks/s]
+[36m(WorkerDict pid=8638)[0m After update policy, memory allocated (GB): 23.867576122283936, memory reserved (GB): 33.48046875.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:47 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:47 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:47 [gpu_worker.py:178] Sleep mode freed 8.61 GiB memory, 17.2 GiB memory is still in use.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:47 [abstract.py:331] It took 0.411138 seconds to fall asleep.
+[36m(WorkerDict pid=8638)[0m Before state_dict() in sharding manager, memory allocated (GB): 23.867576122283936, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m After state_dict() in sharding manager, memory allocated (GB): 27.707544326782227, memory reserved (GB): 30.232421875.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:09:58 [abstract.py:349] It took 0.464310 seconds to wake up tags {'kv_cache', 'weights'}.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:09:58 [abstract.py:349] It took 0.464955 seconds to wake up tags {'weights', 'kv_cache'}.
+[36m(WorkerDict pid=8638)[0m After sync model weights in sharding manager, memory allocated (GB): 27.707544326782227, memory reserved (GB): 30.234375.
+[36m(WorkerDict pid=8638)[0m After del state_dict and empty_cache in sharding manager, memory allocated (GB): 23.867576122283936, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m After entering rollout sharding manager, memory allocated (GB): 23.867576122283936, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8863)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 22.92it/s]
+[36m(WorkerDict pid=8638)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=8863)[0m Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 20.19it/s]
+[36m(WorkerDict pid=8638)[0m Processed prompts:  50%|█████     | 1/2 [00:01<00:01,  1.47s/it, est. speed input: 1134.40 toks/s, output: 19.73 toks/s]
+[36m(WorkerDict pid=8863)[0m Processed prompts: 100%|██████████| 2/2 [00:04<00:00,  2.15s/it, est. speed input: 814.31 toks/s, output: 32.97 toks/s] Processed prompts: 100%|██████████| 2/2 [00:04<00:00,  2.15s/it, est. speed input: 814.31 toks/s, output: 32.97 toks/s]Processed prompts: 100%|██████████| 2/2 [00:04<00:00,  2.05s/it, est. speed input: 814.31 toks/s, output: 32.97 toks/s]
+[36m(WorkerDict pid=8638)[0m After rollout generation, memory allocated (GB): 23.880042552947998, memory reserved (GB): 25.697265625.
+[36m(WorkerDict pid=8638)[0m Before vllm offload in sharding manager, memory allocated (GB): 23.880042552947998, memory reserved (GB): 25.697265625.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:10:02 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:10:03 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:10:03 [gpu_worker.py:178] Sleep mode freed 8.67 GiB memory, 17.02 GiB memory is still in use.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:10:03 [abstract.py:331] It took 0.427261 seconds to fall asleep.
+[36m(WorkerDict pid=8638)[0m After vllm offload in sharding manager, memory allocated (GB): 23.86790418624878, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m After recompute log prob, memory allocated (GB): 23.86772871017456, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m Compute log probs:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Compute log probs: 100%|██████████| 1/1 [00:01<00:00,  1.90s/it]Compute log probs: 100%|██████████| 1/1 [00:01<00:00,  1.90s/it]
+[36m(WorkerDict pid=8863)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=8863)[0m Processed prompts:  50%|█████     | 1/2 [00:01<00:01,  1.47s/it, est. speed input: 1132.04 toks/s, output: 19.69 toks/s]
+[36m(WorkerDict pid=8638)[0m After compute log prob and detached seg outputs, memory allocated (GB): 22.197470664978027, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Compute log probs:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Compute log probs: 100%|██████████| 1/1 [00:00<00:00,  1.08it/s]Compute log probs: 100%|██████████| 1/1 [00:00<00:00,  1.08it/s]
+[36m(WorkerDict pid=8638)[0m After compute_ref_log_prob, memory allocated (GB): 22.197468757629395, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Before update policy, memory allocated (GB): 22.197468757629395, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Update policy [1/1]:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m After update policy, memory allocated (GB): 23.867576122283936, memory reserved (GB): 33.48046875.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:10:02 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:10:03 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:10:03 [gpu_worker.py:178] Sleep mode freed 8.61 GiB memory, 17.2 GiB memory is still in use.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:10:03 [abstract.py:331] It took 0.399421 seconds to fall asleep.
+[36m(WorkerDict pid=8638)[0m Update policy [1/1]: 100%|██████████| 1/1 [00:06<00:00,  6.37s/it]Update policy [1/1]: 100%|██████████| 1/1 [00:06<00:00,  6.37s/it]
+[36m(WorkerDict pid=8638)[0m Processed prompts: 100%|██████████| 2/2 [00:04<00:00,  2.17s/it, est. speed input: 807.66 toks/s, output: 32.70 toks/s] Processed prompts: 100%|██████████| 2/2 [00:04<00:00,  2.17s/it, est. speed input: 807.66 toks/s, output: 32.70 toks/s]Processed prompts: 100%|██████████| 2/2 [00:04<00:00,  2.06s/it, est. speed input: 807.66 toks/s, output: 32.70 toks/s]
+[36m(WorkerDict pid=8638)[0m Before state_dict() in sharding manager, memory allocated (GB): 23.867576122283936, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m After state_dict() in sharding manager, memory allocated (GB): 27.707544326782227, memory reserved (GB): 30.232421875.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:10:14 [abstract.py:349] It took 0.470168 seconds to wake up tags {'kv_cache', 'weights'}.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:10:14 [abstract.py:349] It took 0.473489 seconds to wake up tags {'weights', 'kv_cache'}.
+[36m(WorkerDict pid=8638)[0m After sync model weights in sharding manager, memory allocated (GB): 27.707544326782227, memory reserved (GB): 30.234375.
+[36m(WorkerDict pid=8638)[0m After del state_dict and empty_cache in sharding manager, memory allocated (GB): 23.867576122283936, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m After entering rollout sharding manager, memory allocated (GB): 23.867576122283936, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 11.60it/s]Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 11.57it/s]
+[36m(WorkerDict pid=8638)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=8638)[0m Processed prompts:  50%|█████     | 1/2 [00:02<00:02,  2.33s/it, est. speed input: 716.26 toks/s, output: 15.90 toks/s]
+[36m(WorkerDict pid=8638)[0m After rollout generation, memory allocated (GB): 23.880042552947998, memory reserved (GB): 25.697265625.
+[36m(WorkerDict pid=8638)[0m Before vllm offload in sharding manager, memory allocated (GB): 23.880042552947998, memory reserved (GB): 25.697265625.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:10:18 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8638)[0m Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.57s/it, est. speed input: 989.32 toks/s, output: 29.08 toks/s]Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.57s/it, est. speed input: 989.32 toks/s, output: 29.08 toks/s]Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.69s/it, est. speed input: 989.32 toks/s, output: 29.08 toks/s]
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:10:19 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:10:19 [gpu_worker.py:178] Sleep mode freed 8.67 GiB memory, 17.02 GiB memory is still in use.
+[36m(WorkerDict pid=8638)[0m INFO 06-07 15:10:19 [abstract.py:331] It took 0.444992 seconds to fall asleep.
+[36m(WorkerDict pid=8638)[0m After vllm offload in sharding manager, memory allocated (GB): 23.86790418624878, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m After recompute log prob, memory allocated (GB): 23.86772871017456, memory reserved (GB): 25.28515625.
+[36m(WorkerDict pid=8638)[0m Compute log probs:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Compute log probs: 100%|██████████| 1/1 [00:01<00:00,  1.89s/it]Compute log probs: 100%|██████████| 1/1 [00:01<00:00,  1.90s/it]
+[36m(WorkerDict pid=8863)[0m Rendering prompts:   0%|          | 0/2 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8863)[0m Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 11.25it/s]Rendering prompts: 100%|██████████| 2/2 [00:00<00:00, 11.23it/s]
+[36m(WorkerDict pid=8863)[0m Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[36m(WorkerDict pid=8638)[0m After compute log prob and detached seg outputs, memory allocated (GB): 22.197470664978027, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Compute log probs:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m After compute_ref_log_prob, memory allocated (GB): 22.197468757629395, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Compute log probs: 100%|██████████| 1/1 [00:00<00:00,  1.09it/s]Compute log probs: 100%|██████████| 1/1 [00:00<00:00,  1.09it/s]
+[36m(WorkerDict pid=8638)[0m Before update policy, memory allocated (GB): 22.197468757629395, memory reserved (GB): 23.326171875.
+[36m(WorkerDict pid=8638)[0m Update policy [1/1]:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Update policy [1/1]: 100%|██████████| 1/1 [00:06<00:00,  6.27s/it]Update policy [1/1]: 100%|██████████| 1/1 [00:06<00:00,  6.27s/it]
+[36m(WorkerDict pid=8863)[0m Processed prompts:  50%|█████     | 1/2 [00:02<00:02,  2.36s/it, est. speed input: 705.40 toks/s, output: 15.66 toks/s]
+[36m(WorkerDict pid=8863)[0m Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.59s/it, est. speed input: 977.70 toks/s, output: 28.74 toks/s]Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.59s/it, est. speed input: 977.70 toks/s, output: 28.74 toks/s]Processed prompts: 100%|██████████| 2/2 [00:03<00:00,  1.71s/it, est. speed input: 977.70 toks/s, output: 28.74 toks/s]
+[36m(WorkerDict pid=8638)[0m After update policy, memory allocated (GB): 23.867576122283936, memory reserved (GB): 33.48046875.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:10:18 [block_pool.py:471] Successfully reset prefix cache
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:10:19 [cumem.py:209] CuMemAllocator: sleep freed 8.26 GiB memory in total, of which 3.76 GiB is backed up in CPU and the rest 4.50 GiB is discarded directly.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:10:19 [gpu_worker.py:178] Sleep mode freed 8.61 GiB memory, 17.2 GiB memory is still in use.
+[36m(WorkerDict pid=8863)[0m INFO 06-07 15:10:19 [abstract.py:331] It took 0.436512 seconds to fall asleep.
+[36m(WorkerDict pid=8638)[0m [rank-0]: Saving checkpoint to /root/fuxian/SegCompass/checkpoints/qwen_vad_3b_n2_from_gref/current_machine_bg_20260607_150714/step_5_ep_1/actor/model_world_size_2_rank_0.pt
+[36m(WorkerDict pid=8638)[0m [rank-0]: Saving extra_state to /root/fuxian/SegCompass/checkpoints/qwen_vad_3b_n2_from_gref/current_machine_bg_20260607_150714/step_5_ep_1/actor/extra_state_world_size_2_rank_0.pt
+[36m(WorkerDict pid=8638)[0m /root/miniconda3/envs/mllm/lib/python3.10/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+[36m(WorkerDict pid=8638)[0m   return func(*args, **kwargs)
+[36m(WorkerDict pid=8638)[0m [rank-0]: Saving llm config/processor/tokenizer to /root/fuxian/SegCompass/checkpoints/qwen_vad_3b_n2_from_gref/current_machine_bg_20260607_150714/step_5_ep_1/actor/llm_hf
+[36m(WorkerDict pid=8863)[0m [rank-1]: Saving checkpoint to /root/fuxian/SegCompass/checkpoints/qwen_vad_3b_n2_from_gref/current_machine_bg_20260607_150714/step_5_ep_1/actor/model_world_size_2_rank_1.pt
+[36m(WorkerDict pid=8863)[0m [rank-1]: Saving extra_state to /root/fuxian/SegCompass/checkpoints/qwen_vad_3b_n2_from_gref/current_machine_bg_20260607_150714/step_5_ep_1/actor/extra_state_world_size_2_rank_1.pt
+[36m(WorkerDict pid=8863)[0m /root/miniconda3/envs/mllm/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:821: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=8863)[0m   prev_state_dict_settings = FullyShardedDataParallel.set_state_dict_type(
+[36m(WorkerDict pid=8863)[0m   FullyShardedDataParallel.set_state_dict_type(
+[36m(WorkerDict pid=8863)[0m /root/miniconda3/envs/mllm/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:828: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .[32m [repeated 2x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+[36m(WorkerDict pid=8638)[0m   prev_state_dict_settings = FullyShardedDataParallel.set_state_dict_type(
+[36m(WorkerDict pid=8638)[0m [rank-0]: Saving llm_hf to /root/fuxian/SegCompass/checkpoints/qwen_vad_3b_n2_from_gref/current_machine_bg_20260607_150714/step_5_ep_1/actor/llm_hf
+[36m(WorkerDict pid=8638)[0m Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m Writing model shards:   0%|          | 0/1 [00:20<?, ?it/s]
+[36m(WorkerDict pid=8638)[0m   FullyShardedDataParallel.set_state_dict_type(
+[36m(WorkerDict pid=8638)[0m /root/miniconda3/envs/mllm/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:828: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+Traceback (most recent call last):
+  File "/root/miniconda3/envs/mllm/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/root/miniconda3/envs/mllm/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/root/fuxian/SegCompass/verl/trainer/main.py", line 105, in <module>
+    main()
+  File "/root/fuxian/SegCompass/verl/trainer/main.py", line 44, in main
+    ray.get(main_task.remote(ppo_config))
+  File "/root/autodl-tmp/verl_env/lib/python3.10/site-packages/ray/_private/auto_init_hook.py", line 21, in auto_init_wrapper
+    return fn(*args, **kwargs)
+  File "/root/autodl-tmp/verl_env/lib/python3.10/site-packages/ray/_private/client_mode_hook.py", line 103, in wrapper
+    return func(*args, **kwargs)
+  File "/root/autodl-tmp/verl_env/lib/python3.10/site-packages/ray/_private/worker.py", line 2822, in get
+    values, debugger_breakpoint = worker.get_objects(object_refs, timeout=timeout)
+  File "/root/autodl-tmp/verl_env/lib/python3.10/site-packages/ray/_private/worker.py", line 930, in get_objects
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(SafetensorError): [36mray::main_task()[39m (pid=8368, ip=172.17.0.5)
+  File "/root/fuxian/SegCompass/verl/trainer/main.py", line 101, in main_task
+    trainer.fit()
+  File "/root/fuxian/SegCompass/verl/trainer/ray_trainer.py", line 726, in fit
+    self._save_checkpoint(save_llm_hf=True)
+  File "/root/fuxian/SegCompass/verl/trainer/ray_trainer.py", line 536, in _save_checkpoint
+    actor.save_checkpoint(
+  File "/root/fuxian/SegCompass/verl/single_controller/ray/base.py", line 46, in func
+    output = ray.get(output)
+ray.exceptions.RayTaskError(SafetensorError): [36mray::WorkerDict.actor_save_checkpoint()[39m (pid=8638, ip=172.17.0.5, actor_id=f9a89e784e02c328bbd5a37901000000, repr=<verl.single_controller.ray.base.WorkerDict object at 0x7f0c08c0cc70>)
+  File "/root/fuxian/SegCompass/verl/single_controller/ray/base.py", line 404, in func
+    return getattr(self.worker_dict[key], name)(*args, **kwargs)
+  File "/root/fuxian/SegCompass/verl/single_controller/base/decorator.py", line 209, in inner
+    return func(*args, **kwargs)
+  File "/root/fuxian/SegCompass/verl/workers/fsdp_workers.py", line 432, in save_checkpoint
+    self.checkpoint_manager.save_checkpoint(
+  File "/root/fuxian/SegCompass/verl/utils/checkpoint/fsdp_checkpoint_manager.py", line 208, in save_checkpoint
+    wrapped_llm.save_pretrained(
+  File "/root/autodl-tmp/verl_env/lib/python3.10/site-packages/transformers/modeling_utils.py", line 3546, in save_pretrained
+    safe_save_file(shard_state_dict, filename, metadata=metadata)
+  File "/root/miniconda3/envs/mllm/lib/python3.10/site-packages/safetensors/torch.py", line 307, in save_file
+    serialize_file(_flatten(tensors), filename, metadata=metadata)
+safetensors_rust.SafetensorError: Error while serializing: I/O error: No space left on device (os error 28)
